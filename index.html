@@ -137,22 +137,37 @@ section.block{padding-block:72px}
 @media (max-width:1100px){.gp-grid{grid-template-columns:1fr}}
 .gp-card{border-radius:16px;border:1px solid var(--line);overflow:hidden;background:var(--map-ground)}
 .gp-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.gp{position:relative;min-width:760px;aspect-ratio:1280/828}
-.gp img{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
-.gp svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.gp{position:relative;min-width:700px;aspect-ratio:840/770;background:#21402A}
+.gp svg{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-select:none}
 .gp-foot{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;padding:12px 16px;background:var(--surface);border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
 .gp-foot .hint{margin-left:auto;color:var(--ink-3)}
 .gp-foot span{display:inline-flex;align-items:center;gap:7px}
-svg .cell{cursor:pointer;stroke:rgba(255,255,255,.55);stroke-width:1;fill-opacity:.30;transition:fill-opacity .12s}
-svg .cell.free{fill:var(--st-free)} svg .cell.res{fill:var(--st-res)} svg .cell.busy{fill:var(--st-busy)}
-svg .plot:hover .cell,svg .plot:focus-visible .cell{fill-opacity:.55;stroke:#fff;stroke-width:2}
-svg .plot.sel .cell{fill-opacity:.6;stroke:#FFE2A8;stroke-width:3}
-svg .plot.dim{opacity:.15}
+/* genplan drawing: one illustrated look in both themes, like the client's render */
+svg .bg{fill:#21402A}
+svg .t1{fill:#2E5A35} svg .t2{fill:#24492C} svg .t3{fill:#5E8B4E;opacity:.55}
+svg .lawn{fill:#93B26B}
+svg .rd-e{stroke:#6F8358;stroke-width:17;fill:none;stroke-linecap:round;stroke-linejoin:round}
+svg .rd{stroke:#E6E0CF;stroke-width:14;fill:none;stroke-linecap:round;stroke-linejoin:round}
+svg .rd-e.thin{stroke-width:12} svg .rd.thin{stroke-width:9}
+svg .rlabel{font:500 9px var(--f-body);fill:#6B6352;letter-spacing:.04em;pointer-events:none}
+svg .bound{fill:none;stroke:#fff;stroke-width:2;stroke-opacity:.9;stroke-linejoin:round}
+svg .water{fill:#7FB3C4}
+svg .wlabel{font:500 10px var(--f-body);fill:#EAF3F5}
+svg .trail{fill:none;stroke:#D9CFB4;stroke-width:2.2;stroke-dasharray:5 5;opacity:.85}
+svg .ttl{font:400 30px var(--f-display);fill:#EEF3EA;letter-spacing:.16em}
+svg .sub{font:500 10px var(--f-body);fill:#CFDCC8}
+svg .cmp{fill:#EEF3EA}
+svg .mk-main{fill:#F2A93B} svg .mk-exit{fill:#3FBF5F} svg .mk-fire{fill:#E0473C}
+svg .bbq{fill:#F2B34A;stroke:#fff;stroke-width:1.5}
+svg .cell{cursor:pointer;stroke:#fff;stroke-opacity:.85;stroke-width:1.2;fill-opacity:.82;transition:fill-opacity .12s}
+svg .cell.free{fill:#6CC067} svg .cell.res{fill:#EBB34F} svg .cell.busy{fill:#DE6A52}
+svg .plot:hover .cell,svg .plot:focus-visible .cell{fill-opacity:1;stroke-width:2.6;stroke-opacity:1}
+svg .plot.sel .cell{fill-opacity:1;stroke:#15221A;stroke-width:3;stroke-opacity:1}
+svg .plot.dim{opacity:.22}
 svg .plot{outline:none}
-svg .pin circle{stroke:#fff;stroke-width:1.5}
-svg .pin.free circle{fill:#1F8F3E} svg .pin.res circle{fill:#C77A10} svg .pin.busy circle{fill:#B8371F}
-svg .pin text{font:700 11.5px var(--f-body);fill:#fff;pointer-events:none}
 svg .pin{pointer-events:none}
+svg .house rect{fill:#26302A} svg .house rect.win{fill:#F2B34A}
+svg .num{font:700 11px var(--f-body);fill:#fff;stroke:rgba(20,30,22,.62);stroke-width:2.6px;paint-order:stroke}
 
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;position:sticky;top:84px;display:flex;flex-direction:column;gap:16px}
 @media (max-width:1100px){.panel{position:static}}
@@ -174,7 +189,7 @@ svg .pin{pointer-events:none}
 .stat3 button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
 .contact-list{display:flex;flex-direction:column;gap:8px}
 .cline{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:9px 10px 9px 12px;background:var(--surface)}
-.cline .grow{flex:1;min-width:0}
+.cline .grow{flex:1 1 150px;min-width:0}
 .cline small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
 .cline b{font-weight:500;font-size:15px;overflow-wrap:anywhere}
 .cline .mono{font-size:14.5px;white-space:nowrap}
@@ -376,7 +391,7 @@ td small{display:block;color:var(--ink-3);font-size:12.5px}
               <span><i class="dot free"></i>Свободен</span>
               <span><i class="dot res"></i>Забронирован</span>
               <span><i class="dot busy"></i>Занят</span>
-              <span class="hint">Номер на кружке — номер участка</span>
+              <span class="hint">Номера, улицы и площади — по схеме посёлка</span>
             </div>
           </div>
           <aside class="panel" id="panel" aria-live="polite"></aside>
@@ -417,7 +432,7 @@ td small{display:block;color:var(--ink-3);font-size:12.5px}
           <p class="eyebrow">Бронирование</p>
           <h2 style="font-size:clamp(28px,3.2vw,40px);margin:8px 0 24px">Как забронировать</h2>
           <ol class="steps">
-            <li><div><b>Выберите участок на генплане</b><p>Зелёные дома свободны. Запомните номер участка — он на кружке.</p></div></li>
+            <li><div><b>Выберите участок на генплане</b><p>Зелёные участки свободны. Запомните номер — он подписан на генплане.</p></div></li>
             <li><div><b>Позвоните или напишите</b><p>Назовите номер участка и даты. Администратор проверит и подтвердит бронь.</p></div></li>
             <li><div><b>Предоплата 30%</b><p>Пришлём ссылку на оплату. После предоплаты дом закреплён за вами.</p></div></li>
           </ol>
@@ -491,29 +506,42 @@ const TYPES={
   L:{name:'Барн L',guests:8,beds:4,area:156,price:21500,feats:['Своя баня','Камин','Панорамные окна','Wi-Fi'],text:'Самые большие участки посёлка, собственная баня с купелью, четыре спальни и две ванные.'}
 };
 const ST={free:'Свободен',res:'Забронирован',busy:'Занят'};
-/* Точки домов на генплане заказчика (координаты изображения 1280×828), по группам улиц. */
-const GROUPS=[
-  {street:'ул. Одзю',type:'L',pts:[[930,80],[1008,100]]},
-  {street:'ул. Бальбидо',type:'M',pts:[[745,118],[723,165],[698,205],[652,250]]},
-  {street:'ул. Одзю',type:'L',pts:[[826,148],[888,158],[945,172],[1000,183],[808,193],[880,203],[972,230],[826,248],[960,266],[811,288],[945,320]]},
-  {street:'ул. Бельведер',type:'S',pts:[[1120,145],[1116,198],[1101,242],[1093,283],[1082,324],[1050,345]]},
-  {street:'ул. Синьявно',type:'S',pts:[[568,320],[548,350],[533,397],[515,446],[503,493],[494,538],[487,582]]},
-  {street:'ул. Синьявно',type:'M',pts:[[667,322],[645,367],[643,410],[633,457],[619,500],[611,543],[599,589]]},
-  {street:'ул. Гранде',type:'M',pts:[[752,346],[741,387],[731,429],[715,470],[705,514],[696,561],[683,608]]},
-  {street:'ул. Капо',type:'S',pts:[[674,654],[673,700]]},
-  {street:'ул. Гранде',type:'L',pts:[[851,371],[842,415],[831,457],[822,499],[810,543],[799,587],[789,631],[781,678]]},
-  {street:'ул. Бельведер',type:'M',pts:[[936,390],[926,433],[918,475],[908,518],[896,562],[883,605],[874,650],[857,694]]},
-  {street:'ул. Бельведер',type:'S',pts:[[1041,457],[1030,503],[1023,551],[1014,596],[1006,639],[1001,683]]},
-  {street:'ул. Капо',type:'S',pts:[[768,738],[856,768],[955,795]]}
-];
-const BASE=[];
-(function(){const R=rngF(828);const rng={S:[7.8,9.6],M:[10,12.6],L:[13,17]};
-  GROUPS.forEach(g=>g.pts.forEach(([x,y])=>{const t=g.type,[a,b]=rng[t],s=Math.round((a+R()*(b-a))*10)/10;
-    BASE.push({id:BASE.length+1,x,y,street:g.street,type:t,sotki:s,price:TYPES[t].price+Math.round((s-a)*700/100)*100})}))})();
+/* Генплан по схеме заказчика («Инфраструктура. Нумерация участков»): координаты в системе листа схемы. */
+const BOUND=[[313,315],[363,324],[568,421],[506,807],[498,843],[398,1043],[164,915],[177,849],[16,797],[50,622],[197,418]];
+const RD={odz:[[264,380],[470,424]],bal:[[279,384],[240,577]],bel:[[470,424],[360,952]],cross:[[150,565],[432,612]],
+  sil:[[150,565],[105,830]],gra:[[293,589],[250,891]],kapo:[[170,849],[442,988]],gate:[[337,316],[331,390]],fire:[[470,424],[481,368]]};
+const RW=7;
+const xAt=(s,y)=>{const[[x1,y1],[x2,y2]]=s;return x1+(x2-x1)*(y-y1)/(y2-y1)};
+function bndL(y){return y<=622?xAt([[197,418],[50,622]],y):xAt([[50,622],[16,797]],y)}
+function bndR(y){return y<=421?568:y<=807?xAt([[568,421],[506,807]],y):y<=843?xAt([[506,807],[498,843]],y):xAt([[498,843],[398,1043]],y)}
+const two=(L,R,col,y)=>{const xl=xAt(L,y)+RW,xr=xAt(R,y)-RW,m=(xl+xr)/2;return[col?(m+xr)/2:(xl+m)/2,y]};
+/* площади участков, м² — со схемы */
+const AREA={1:944,2:957,3:1055,4:988,5:985,6:1025,7:778,8:1055,9:1353,10:1376,11:1389,12:1390,13:1400,14:1393,15:1415,16:1261,17:1425,18:765,19:1436,20:775,
+  21:1448,22:786,23:1460,24:796,25:1472,26:805,27:1361,28:822,29:1633,30:770,31:1490,32:734,33:1370,34:1175,35:1358,36:1279,37:1034,38:975,39:1222,40:1035,
+  41:918,42:766,43:800,44:760,45:780,46:765,47:789,48:765,49:780,50:765,51:780,52:765,53:780,54:765,55:777,56:764,57:785,58:1314,59:895,60:1365,
+  61:1230,62:1324,63:1111,64:917,65:1046,66:765,67:1070,68:775,69:1002,70:772,71:1121,72:776,73:1117,74:780,75:1100,76:780,77:1085,78:784,79:1108,80:1113};
+const PL=[];const add=(id,blk,street,[x,y])=>PL.push({id,blk,street,x,y});
+add(1,'N1','ул. Одзио',[298,362]);
+[[3,355,358],[5,400,371],[7,444,388]].forEach(([i,x,y])=>add(i,'N2','ул. Одзио',[x,y]));
+[[2,295,418],[4,338,427],[6,382,436],[8,425,445]].forEach(([i,x,y])=>add(i,'C','ул. Одзио',[x,y]));
+[[62,483],[60,522],[58,560]].forEach(([i,y])=>add(i,'C','ул. Бальцано',two(RD.bal,RD.bel,0,y)));
+[[12,502],[14,540],[16,578]].forEach(([i,y])=>add(i,'C','ул. Бельведер',two(RD.bal,RD.bel,1,y)));
+add(64,'W1','ул. Бальцано',[236,421]);
+[[63,458],[61,494]].forEach(([i,y])=>add(i,'W1','ул. Бальцано',[(bndL(y)+xAt(RD.bal,y)-RW)/2,y]));
+{const y=535,xl=bndL(y),xr=xAt(RD.bal,y)-RW,m=(xl+xr)/2;add(65,'W1','ул. Бальцано',[(xl+m)/2,y-3]);add(59,'W1','ул. Бальцано',[(m+xr)/2,y+3])}
+[[67,573],[69,610],[71,646],[73,682],[75,718],[77,754],[79,790]].forEach(([i,y])=>add(i,'W2','ул. Сильвано',[(bndL(y)+xAt(RD.sil,y)-RW)/2,y]));
+[[66,582],[68,615],[70,647],[72,676],[74,709],[76,740],[78,772],[80,803]].forEach(([i,y])=>add(i,'M1','ул. Сильвано',two(RD.sil,RD.gra,0,y)));
+[[57,595],[55,628],[53,660],[51,690],[49,721],[47,754],[45,784],[43,815],[41,846]].forEach(([i,y])=>add(i,'M1','ул. Гранде',two(RD.sil,RD.gra,1,y)));
+[[56,610],[54,641],[52,672],[50,703],[48,735],[46,766],[44,797],[42,829],[40,862]].forEach(([i,y])=>add(i,'M2','ул. Гранде',two(RD.gra,RD.bel,0,y)));
+[[18,622],[20,657],[22,690],[24,722],[26,752],[28,780],[30,809],[32,841],[34,874]].forEach(([i,y])=>add(i,'M2','ул. Бельведер',two(RD.gra,RD.bel,1,y)));
+[[9,422],[10,460],[11,498],[13,537],[15,577],[17,617],[19,657],[21,695],[23,733],[25,772],[27,811],[29,848],[31,886],[33,925]].forEach(([i,y])=>add(i,'E','ул. Бельведер',[(xAt(RD.bel,y)+RW+bndR(y))/2,y]));
+[[39,195,900],[38,245,926],[37,292,950],[36,338,974],[35,385,995]].forEach(([i,x,y])=>add(i,'S','ул. Капо',[x,y]));
+const BASE=PL.sort((a,b)=>a.id-b.id).map(p=>{const a=AREA[p.id],t=a<900?'S':a<1250?'M':'L',min={S:730,M:900,L:1250}[t];
+  return {...p,area:a,sotki:a/100,type:t,price:TYPES[t].price+Math.round((a-min)*8/100)*100}});
 const B=id=>BASE.find(p=>p.id===id);
 
 /* ---------- данные (демо, в браузере) ---------- */
-const KEY='lokarno-plan-v1';
+const KEY='lokarno-plan-v2';
 let DB;
 function seed(){const R=rngF(2026);const plots={};BASE.forEach(p=>{const r=R();plots[p.id]={status:r<.56?'free':r<.76?'res':'busy',price:p.price,type:p.type,note:''}});
   plots[12].note='Дом у самого леса, тихая сторона посёлка.';plots[3].note='Рядом КПП и парковка для гостей.';
@@ -524,24 +552,66 @@ load();
 const P=id=>({...B(id),...DB.plots[id]});
 const ALL=()=>BASE.map(p=>P(p.id));
 
-/* ---------- геометрия: зоны участков (диаграмма Вороного, ограниченная кругом) ---------- */
-const RAD=48;
+/* ---------- геометрия: кварталы между улицами, участки внутри квартала ---------- */
 function clip(poly,a,b,c){const out=[];for(let i=0;i<poly.length;i++){const p=poly[i],q=poly[(i+1)%poly.length],fp=a*p[0]+b*p[1]-c,fq=a*q[0]+b*q[1]-c;if(fp<=0)out.push(p);if((fp<=0)!==(fq<=0)){const t=fp/(fp-fq);out.push([p[0]+(q[0]-p[0])*t,p[1]+(q[1]-p[1])*t])}}return out}
+/* полуплоскость по прямой p–q со стороны точки ins, отступ off */
+function hp(p,q,ins,off){let nx=q[1]-p[1],ny=-(q[0]-p[0]);const l=Math.hypot(nx,ny);nx/=l;ny/=l;if(nx*(ins[0]-p[0])+ny*(ins[1]-p[1])>0){nx=-nx;ny=-ny}return[nx,ny,nx*p[0]+ny*p[1]-off]}
+const E_=(a,b)=>[a,b,0];
+const BL={
+  N1:{r:[298,362],ang:12,h:[E_([197,418],[313,315]),E_([313,315],[363,324]),[...RD.odz,RW],[...RD.gate,5]]},
+  N2:{r:[400,370],ang:12,h:[E_([313,315],[363,324]),E_([363,324],[568,421]),[...RD.odz,RW],[...RD.gate,5],[...RD.bel,RW]]},
+  C:{r:[350,500],ang:12,h:[[...RD.odz,RW],[...RD.bal,RW],[...RD.bel,RW],[...RD.cross,RW]]},
+  W1:{r:[200,480],ang:10,h:[E_([197,418],[313,315]),E_([50,622],[197,418]),[...RD.bal,RW],[...RD.cross,RW],E_([40,531],[150,553])]},
+  W2:{r:[90,680],ang:10,h:[E_([40,531],[150,553]),E_([50,622],[197,418]),E_([16,797],[50,622]),E_([16,797],[177,849]),[...RD.sil,RW]]},
+  M1:{r:[200,700],ang:10,h:[[...RD.cross,RW],[...RD.sil,RW],[...RD.gra,RW],E_([16,797],[177,849]),[...RD.kapo,RW]]},
+  M2:{r:[330,740],ang:10,h:[[...RD.cross,RW],[...RD.gra,RW],[...RD.bel,RW],[...RD.kapo,RW]]},
+  E:{r:[490,650],ang:10,h:[[...RD.bel,RW],E_([363,324],[568,421]),E_([568,421],[506,807]),E_([506,807],[498,843]),E_([498,843],[398,1043]),[...RD.kapo,RW]]},
+  S:{r:[290,960],ang:27,h:[[...RD.kapo,RW],E_([177,849],[164,915]),E_([164,915],[398,1043]),E_([498,843],[398,1043])]}
+};
+const BLPOLY={};
+Object.entries(BL).forEach(([k,b])=>{let poly=[[-200,250],[800,250],[800,1100],[-200,1100]];b.h.forEach(([p,q,off])=>{const[a,bb,c]=hp(p,q,b.r,off);poly=clip(poly,a,bb,c)});BLPOLY[k]=poly});
 const CELLS={};
-BASE.forEach(s=>{let poly=Array.from({length:28},(_,k)=>{const a=k/28*Math.PI*2;return[s.x+Math.cos(a)*RAD,s.y-4+Math.sin(a)*RAD*.82]});
-  BASE.forEach(o=>{if(o===s||Math.hypot(o.x-s.x,o.y-s.y)>RAD*2.2)return;const a=o.x-s.x,b=o.y-s.y,c=(o.x*o.x+o.y*o.y-s.x*s.x-s.y*s.y)/2;poly=clip(poly,a,b,c)});
+BASE.forEach(s=>{let poly=BLPOLY[s.blk];BASE.forEach(o=>{if(o===s||o.blk!==s.blk)return;const a=o.x-s.x,b=o.y-s.y,c=(o.x*o.x+o.y*o.y-s.x*s.x-s.y*s.y)/2;poly=clip(poly,a,b,c)});
   CELLS[s.id]='M'+poly.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L')+'Z'});
+function inPoly(x,y,p){let o=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const[xi,yi]=p[i],[xj,yj]=p[j];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))o=!o}return o}
+const seg=s=>`M${s[0][0]} ${s[0][1]} L${s[1][0]} ${s[1][1]}`;
+const DECOR=(()=>{const R=rngF(77),t=[];
+  for(let i=0;i<4000&&t.length<950;i++){const x=-125+R()*850,y=285+R()*780,r=5+R()*7,m=r+6;
+    if([[0,0],[m,0],[-m,0],[0,m],[0,-m]].some(([dx,dy])=>inPoly(x+dx,y+dy,BOUND)))continue;
+    if(((x-655)/(84+r))**2+((y-1000)/(52+r))**2<1)continue;
+    if(x<112&&y<392)continue;
+    t.push([x,y,r,R()])}
+  t.sort((a,b)=>a[1]-b[1]);
+  const trees=t.map(([x,y,r,k])=>`<circle class="${k<.5?'t1':'t2'}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"/><circle class="t3" cx="${(x-r*.3).toFixed(1)}" cy="${(y-r*.32).toFixed(1)}" r="${(r*.45).toFixed(1)}"/>`).join('');
+  const main=['odz','bal','bel','cross','sil','gra','kapo'],thin=['gate','fire'];
+  const labels=[['ул. Одзио','odz',.5],['ул. Бальцано','bal',.6],['ул. Бельведер','bel',.24],['ул. Сильвано','sil',.5],['ул. Гранде','gra',.45],['ул. Капо','kapo',.5]].map(([txt,k,f])=>{
+    const[[x1,y1],[x2,y2]]=RD[k],x=(x1+(x2-x1)*f).toFixed(1),y=(y1+(y2-y1)*f).toFixed(1);let a=Math.atan2(y2-y1,x2-x1)*180/Math.PI;if(a>90)a-=180;if(a<-90)a+=180;
+    return `<text class="rlabel" x="${x}" y="${y}" dy="3.2" text-anchor="middle" transform="rotate(${a.toFixed(1)} ${x} ${y})">${txt}</text>`}).join('');
+  const poly=BOUND.map(p=>p.join(',')).join(' ');
+  return `<rect class="bg" x="-130" y="280" width="860" height="790"/>
+   <ellipse class="water" cx="655" cy="1000" rx="84" ry="52"/><text class="wlabel" x="652" y="1004" text-anchor="middle">Озеро</text>
+   <path class="trail" d="M93 836 C 70 880, 10 905, -70 965"/><path class="trail" d="M446 996 C 500 1010, 545 1012, 575 1004"/>
+   ${trees}
+   <text class="ttl" x="-104" y="338">ЛОКАРНО</text><text class="sub" x="-103" y="357">загородный посёлок</text><text class="sub" x="-103" y="371">в окружении леса</text>
+   <g transform="translate(-92 418)"><path class="cmp" d="M0 -15 L6 12 L0 7 L-6 12Z"/><text class="sub" x="0" y="-20" text-anchor="middle">С</text></g>
+   <polygon class="lawn" points="${poly}"/>
+   ${main.map(k=>`<path class="rd-e" d="${seg(RD[k])}"/>`).join('')}${thin.map(k=>`<path class="rd-e thin" d="${seg(RD[k])}"/>`).join('')}
+   ${main.map(k=>`<path class="rd" d="${seg(RD[k])}"/>`).join('')}${thin.map(k=>`<path class="rd thin" d="${seg(RD[k])}"/>`).join('')}
+   ${labels}<polygon class="bound" points="${poly}"/>
+   <path class="mk-main" d="M329 294 L345 294 L337 307Z"/><path class="mk-exit" d="M84 838 L100 834 L95 849Z"/><path class="mk-exit" d="M440 1000 L456 997 L449 1011Z"/>
+   <path class="mk-fire" d="M240 360 L254 355 L250 369Z"/><path class="mk-fire" d="M486 360 L500 365 L489 374Z"/>
+   <circle class="bbq" cx="514" cy="621" r="6"/><circle class="bbq" cx="420" cy="968" r="6"/>`})();
 
-function planHTML(){return `<img src="img/lokarno-plan.jpg" alt="Генплан посёлка Локарно" draggable="false">
-  <svg viewBox="0 0 1280 828" role="group" aria-label="Участки на генплане">${BASE.map(p=>`<g class="plot" data-id="${p.id}" tabindex="0" role="button" aria-label="Участок ${p.id}"><path class="cell" d="${CELLS[p.id]}"/></g>`).join('')}
-  ${BASE.map(p=>`<g class="pin" data-pin="${p.id}" transform="translate(${p.x-17} ${p.y+12})"><circle r="11.5"/><text text-anchor="middle" dy="4">${p.id}</text></g>`).join('')}</svg>`}
+function planHTML(){return `<svg viewBox="-120 290 840 770" role="group" aria-label="Генплан посёлка Локарно: участки и улицы">${DECOR}
+  ${BASE.map(p=>`<g class="plot" data-id="${p.id}" tabindex="0" role="button" aria-label="Участок ${p.id}"><path class="cell" d="${CELLS[p.id]}"/></g>`).join('')}
+  ${BASE.map(p=>`<g class="pin" data-pin="${p.id}"><g class="house" transform="translate(${p.x.toFixed(1)} ${(p.y-6).toFixed(1)}) rotate(${BL[p.blk].ang})"><rect x="-7" y="-4.5" width="14" height="9" rx="1"/><rect class="win" x="-2.5" y="1.4" width="5" height="2.2"/></g><text class="num" x="${p.x.toFixed(1)}" y="${(p.y+11).toFixed(1)}" text-anchor="middle">${p.id}</text></g>`).join('')}</svg>`}
 function paintPlan(root,{sel,dimFn}={}){
   $$('.plot',root).forEach(g=>{const p=P(+g.dataset.id),c=g.firstElementChild;c.setAttribute('class','cell '+p.status);g.classList.toggle('sel',sel===p.id);g.classList.toggle('dim',!!dimFn&&dimFn(p));
     g.setAttribute('aria-label',`Участок ${p.id}, ${ST[p.status].toLowerCase()}, ${TYPES[p.type].name}`)});
-  $$('.pin',root).forEach(g=>{const p=P(+g.dataset.pin);g.setAttribute('class','pin '+p.status);g.style.opacity=dimFn&&dimFn(p)?.25:1});
+  $$('.pin',root).forEach(g=>{const p=P(+g.dataset.pin);g.style.opacity=dimFn&&dimFn(p)?.3:1});
 }
 const tip=$('#tip');
-function tipHTML(p){return `<b>Участок №${p.id}</b> · <span class="st"><i class="dot ${p.status}"></i>${ST[p.status]}</span><br>${TYPES[p.type].name} · до ${TYPES[p.type].guests} гостей · ${sot(p.sotki)} сот.<br><span class="mono">от ${rub(p.price)} / ночь</span><small>${p.street} · нажмите, чтобы открыть</small>`}
+function tipHTML(p){return `<b>Участок №${p.id}</b> · <span class="st"><i class="dot ${p.status}"></i>${ST[p.status]}</span><br>${TYPES[p.type].name} · до ${TYPES[p.type].guests} гостей<br>Участок ${sot(p.sotki)} сот. (${p.area} м²)<br><span class="mono">от ${rub(p.price)} / ночь</span><small>${p.street} · нажмите, чтобы открыть</small>`}
 function showTip(h,x,y){tip.innerHTML=h;tip.hidden=false;const w=tip.offsetWidth,hh=tip.offsetHeight;let l=x+16,t=y+16;if(l+w>innerWidth-8)l=x-w-16;if(t+hh>innerHeight-8)t=y-hh-16;tip.style.left=l+'px';tip.style.top=t+'px'}
 function hideTip(){tip.hidden=true}
 function bindPlan(root,onPick){
