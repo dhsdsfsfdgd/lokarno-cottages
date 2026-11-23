@@ -1,0 +1,1177 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Аренда коттеджей в посёлке Локарно: карта посёлка с онлайн-бронированием, чат с администратором и админ-панель.">
+<title>Коттеджи Локарно</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Onest:wght@400;500;600;700&family=Tenor+Sans&display=swap">
+<style>
+/* Layout: лесной посёлок; интерактивный генплан — главный инструмент бронирования, админка — отдельный вид #admin */
+:root{
+  --bg:#F1F4EE; --surface:#FFFFFF; --surface-2:#E6ECE2; --ink:#15221A; --ink-2:#4B5B50; --ink-3:#7A887E; --line:#D2DBCE;
+  --primary:#1E3A2A; --on-primary:#F1F4EE;
+  --moss:#4F7F3A; --moss-soft:#DDE9D3;
+  --amber:#D98A1E; --amber-soft:#FBEACB; --on-amber:#2A1A04;
+  --danger:#B4452C; --danger-soft:#F6DDD5;
+  --info:#2F6C8F; --info-soft:#D9E9F2;
+  --map-ground:#C3D3B5; --map-inner:#D6E2CA; --map-road:#F7F5EE; --map-road-edge:#A6B59B;
+  --tree-1:#3F6B45; --tree-2:#2C5236; --tree-3:#6C9361; --water:#9CC3CF;
+  --plot-free:#F1F7EA; --plot-free-stroke:#8DB078; --plot-busy:#C4CAC1; --plot-busy-stroke:#A2A99F;
+  --house:#26302A; --lamp:#F2B34A;
+  --side:#17301F; --side-ink:#DCE6D6; --side-ink-2:#93A897; --side-hover:#22402C;
+  --shadow:0 1px 2px rgba(20,35,25,.06),0 10px 30px rgba(20,35,25,.10);
+  --f-display:"Tenor Sans","Onest","Segoe UI",system-ui,sans-serif;
+  --f-body:"Onest","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E1511; --surface:#151F18; --surface-2:#1C2820; --ink:#E4EBE1; --ink-2:#A9B7AC; --ink-3:#77867B; --line:#2A3830;
+  --primary:#D5E6C8; --on-primary:#0E1511;
+  --moss:#8DBF6E; --moss-soft:#22351F;
+  --amber:#F0A63A; --amber-soft:#3A2A12; --on-amber:#1E1203;
+  --danger:#E07A60; --danger-soft:#3A1E17; --info:#7DB6D6; --info-soft:#16303D;
+  --map-ground:#18261C; --map-inner:#203124; --map-road:#3A473E; --map-road-edge:#0F1611;
+  --tree-1:#2B4A31; --tree-2:#1E3624; --tree-3:#3C6542; --water:#23434D;
+  --plot-free:#33603A; --plot-free-stroke:#7DB065; --plot-busy:#222825; --plot-busy-stroke:#353D38;
+  --house:#0A0E0B; --lamp:#F2B34A;
+  --side:#0A100C; --side-ink:#DCE6D6; --side-ink-2:#8A9C8E; --side-hover:#15221A;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0E1511; --surface:#151F18; --surface-2:#1C2820; --ink:#E4EBE1; --ink-2:#A9B7AC; --ink-3:#77867B; --line:#2A3830;
+  --primary:#D5E6C8; --on-primary:#0E1511;
+  --moss:#8DBF6E; --moss-soft:#22351F;
+  --amber:#F0A63A; --amber-soft:#3A2A12; --on-amber:#1E1203;
+  --danger:#E07A60; --danger-soft:#3A1E17; --info:#7DB6D6; --info-soft:#16303D;
+  --map-ground:#18261C; --map-inner:#203124; --map-road:#3A473E; --map-road-edge:#0F1611;
+  --tree-1:#2B4A31; --tree-2:#1E3624; --tree-3:#3C6542; --water:#23434D;
+  --plot-free:#33603A; --plot-free-stroke:#7DB065; --plot-busy:#222825; --plot-busy-stroke:#353D38;
+  --house:#0A0E0B; --lamp:#F2B34A;
+  --side:#0A100C; --side-ink:#DCE6D6; --side-ink-2:#8A9C8E; --side-hover:#15221A;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--bg)}
+a{color:inherit}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;letter-spacing:.01em}
+p{margin:0}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.eyebrow{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.num,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+/* buttons & fields */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:8px;border:1px solid transparent;font:600 14.5px var(--f-body);cursor:pointer;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s,transform .1s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--primary);color:var(--on-primary)}
+.btn-primary:hover{background:color-mix(in oklab,var(--primary) 86%,var(--moss))}
+.btn-amber{background:var(--amber);color:var(--on-amber)}
+.btn-amber:hover{background:color-mix(in oklab,var(--amber) 88%,var(--ink))}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--ink-3)}
+.btn-sm{height:36px;padding:0 14px;font-size:13.5px}
+.btn-xs{height:30px;padding:0 10px;font-size:12.5px;border-radius:6px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn-block{width:100%}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field>span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+input,select,textarea{font:15px var(--f-body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;height:44px;padding:0 12px;width:100%;min-width:0}
+textarea{height:auto;padding:10px 12px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--moss);box-shadow:0 0 0 3px color-mix(in oklab,var(--moss) 25%,transparent)}
+.chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font:500 13px var(--f-body);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink-2);font-size:12.5px;font-weight:500}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 9px 2px 8px;border-radius:999px;font-size:12.5px;font-weight:500;white-space:nowrap;background:var(--surface-2);color:var(--ink)}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
+.pill.new{background:var(--amber-soft)}.pill.new::before{background:var(--amber)}
+.pill.confirmed,.pill.free{background:var(--moss-soft)}.pill.confirmed::before,.pill.free::before{background:var(--moss)}
+.pill.in{background:var(--info-soft)}.pill.in::before{background:var(--info)}
+.pill.cancelled,.pill.busy{background:var(--danger-soft)}.pill.cancelled::before,.pill.busy::before{background:var(--danger)}
+.pill.off::before{background:var(--ink-3)}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:color-mix(in oklab,var(--bg) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;gap:24px;height:64px}
+.logo{font-family:var(--f-display);font-size:22px;letter-spacing:.32em;text-decoration:none;display:flex;flex-direction:column;line-height:1}
+.logo small{font-family:var(--f-body);font-size:10px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase;margin-top:4px}
+.nav{display:flex;gap:22px;margin-left:12px}
+.nav a{text-decoration:none;color:var(--ink-2);font-size:14px;font-weight:500}
+.nav a:hover{color:var(--ink)}
+.top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.menu-btn{display:none;width:40px;height:40px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;align-items:center;justify-content:center}
+@media (max-width:980px){
+  .nav{display:none;position:absolute;left:0;right:0;top:64px;flex-direction:column;gap:0;margin:0;background:var(--bg);border-bottom:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px))}
+  .nav.open{display:flex}
+  .nav a{padding:10px 0;border-bottom:1px solid var(--line)}
+  .menu-btn{display:inline-flex}
+  .hide-m{display:none}
+}
+
+/* hero */
+.hero{padding-block:48px 40px}
+.hero-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:48px;align-items:center}
+.hero h1{font-size:clamp(34px,4.6vw,58px);line-height:1.06;margin:14px 0 18px}
+.lead{font-size:17px;color:var(--ink-2);max-width:52ch}
+.search .btn{grid-column:1/-1}
+.search{margin-top:28px;max-width:520px;display:grid;grid-template-columns:1fr 1fr 96px;gap:10px;align-items:end;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
+.hero-fig{margin:0;position:relative;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:1280/828;max-width:100%;background:var(--surface-2)}
+.hero-fig img{display:block;width:100%;height:100%;object-fit:cover}
+.hero-fig figcaption{position:absolute;left:12px;bottom:12px;background:rgba(10,18,13,.72);color:#EEF3EA;font-size:12.5px;padding:6px 10px;border-radius:6px;backdrop-filter:blur(4px)}
+@media (max-width:980px){.hero-in{grid-template-columns:1fr;gap:28px}.hero{padding-block:28px 24px}}
+@media (max-width:620px){.search{grid-template-columns:1fr 1fr}.search .btn{grid-column:1/-1}}
+
+.facts{border-block:1px solid var(--line);background:var(--surface)}
+.facts-in{display:grid;grid-template-columns:repeat(4,1fr);padding-block:18px}
+.fact{display:flex;gap:12px;align-items:center;padding:6px 18px;border-left:1px solid var(--line)}
+.fact:first-child{border-left:0;padding-left:0}
+.fact svg{flex:none;color:var(--moss)}
+.fact b{display:block;font-family:var(--f-display);font-weight:400;font-size:20px;line-height:1.2}
+.fact span{font-size:13px;color:var(--ink-3)}
+@media (max-width:820px){.facts-in{grid-template-columns:1fr 1fr;gap:14px}.fact{border-left:0;padding:0}}
+
+section.block{padding-block:72px}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+.sec-head h2{font-size:clamp(28px,3.2vw,40px);margin-top:8px}
+.sec-head p{color:var(--ink-2);max-width:56ch}
+
+/* map */
+.map-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-bottom:14px}
+.map-tools .field{width:150px}
+.map-tools .field.g{width:100px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.toggle{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-2);cursor:pointer;height:32px}
+.toggle input{width:18px;height:18px;accent-color:var(--moss)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-left:auto}
+.seg button{border:0;background:var(--surface);color:var(--ink-2);font:500 13px var(--f-body);padding:0 12px;height:34px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
+.map-grid{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:20px;align-items:start}
+@media (max-width:1060px){.map-grid{grid-template-columns:1fr}}
+.map-card{background:var(--map-ground);border-radius:16px;border:1px solid var(--line);overflow:hidden;position:relative}
+.map-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.map-scroll svg{display:block;width:100%;min-width:700px;height:auto}
+.map-photo{display:block;width:100%;height:auto}
+.map-legend{display:flex;flex-wrap:wrap;gap:8px 18px;padding:12px 16px;background:var(--surface);border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+.map-legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid}
+.map-count{position:absolute;left:14px;top:14px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13px;box-shadow:var(--shadow)}
+.map-count b{font-family:var(--f-mono)}
+
+svg .lot{fill:var(--plot-free);stroke:var(--plot-free-stroke);stroke-width:1}
+svg .plot{cursor:pointer;outline:none}
+svg .plot.busy .lot{fill:var(--plot-busy);stroke:var(--plot-busy-stroke)}
+svg .plot.off .lot{fill:var(--plot-busy);stroke:var(--plot-busy-stroke);stroke-dasharray:4 3}
+svg .plot.dim{opacity:.3}
+svg .plot:hover .lot{stroke:var(--ink);stroke-width:1.6}
+svg .plot.sel .lot{stroke:var(--amber);stroke-width:3.5}
+svg .plot:focus-visible .lot{stroke:var(--amber);stroke-width:3}
+svg .roof{fill:var(--house)}
+svg .ridge{stroke:var(--ink-3);stroke-width:.8;opacity:.7}
+svg .lamp{fill:var(--lamp)}
+svg .plot.busy .lamp,svg .plot.off .lamp{fill:var(--ink-3);opacity:.5}
+svg .pnum{font:500 10.5px var(--f-mono);fill:var(--ink-2)}
+svg .plot.sel .pnum{fill:var(--ink);font-weight:700}
+svg .road-edge{stroke:var(--map-road-edge);stroke-width:19;fill:none;stroke-linecap:round;stroke-linejoin:round}
+svg .road{stroke:var(--map-road);stroke-width:16;fill:none;stroke-linecap:round;stroke-linejoin:round}
+svg .rlabel{font:500 9.5px var(--f-body);fill:var(--ink-3);letter-spacing:.06em}
+svg .inner{fill:var(--map-inner)}
+svg .bound{fill:none;stroke:var(--map-road);stroke-width:2;stroke-dasharray:0}
+svg .zone{fill:var(--amber-soft);stroke:var(--amber);stroke-width:1}
+svg .zlabel{font:600 10px var(--f-body);fill:var(--ink)}
+svg .mlabel{font:500 11px var(--f-body);fill:var(--ink-2);letter-spacing:.04em}
+svg .trail{fill:none;stroke:var(--map-road);stroke-width:2.5;stroke-dasharray:5 5;stroke-linecap:round}
+svg .water{fill:var(--water)}
+svg .t1{fill:var(--tree-1)} svg .t2{fill:var(--tree-2)} svg .t3{fill:var(--tree-3)}
+svg .mk-main{fill:var(--amber)} svg .mk-exit{fill:var(--moss)}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;position:sticky;top:84px;display:flex;flex-direction:column;gap:16px}
+@media (max-width:1060px){.panel{position:static}}
+.panel h3{font-size:26px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.panel .muted{color:var(--ink-2);font-size:14px}
+.specs{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:10px}
+.specs div{padding:10px 12px;border-left:1px solid var(--line)}
+.specs div:first-child{border-left:0}
+.specs b{display:block;font-family:var(--f-mono);font-size:17px;font-weight:500}
+.specs span{font-size:12px;color:var(--ink-3)}
+.feat{display:flex;flex-wrap:wrap;gap:6px}
+.strip{display:grid;grid-template-columns:repeat(14,1fr);gap:3px}
+.strip button{border:0;border-radius:5px;padding:5px 0 4px;font:500 11px var(--f-mono);background:var(--moss-soft);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.strip button small{font:500 9px var(--f-body);color:var(--ink-3);text-transform:lowercase}
+.strip button.busy{background:var(--danger-soft);color:var(--ink-3);text-decoration:line-through}
+.strip button.range{outline:2px solid var(--amber);outline-offset:-2px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quote{border-top:1px dashed var(--line);padding-top:12px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.quote div{display:flex;justify-content:space-between;gap:10px}
+.quote .tot{font-size:18px;font-weight:600;padding-top:6px}
+.quote .tot span:last-child{font-family:var(--f-mono)}
+.suggest{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.suggest button{width:100%;display:flex;justify-content:space-between;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 12px;cursor:pointer;font:14px var(--f-body)}
+.suggest button:hover{border-color:var(--moss)}
+.suggest b{font-family:var(--f-mono);font-weight:500}
+.note{font-size:13px;color:var(--ink-2);background:var(--surface-2);border-radius:8px;padding:10px 12px}
+.note.warn{background:var(--danger-soft)}
+
+/* types */
+.types{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media (max-width:900px){.types{grid-template-columns:1fr}}
+.type{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.type svg{display:block;width:100%;height:auto;background:var(--surface-2)}
+.type-b{padding:20px;display:flex;flex-direction:column;gap:12px;flex:1}
+.type h3{font-size:24px}
+.type .price{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding-top:8px}
+.type .price b{font-family:var(--f-mono);font-size:19px;font-weight:500}
+.type .price small{color:var(--ink-3)}
+
+/* services */
+.services{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.svc{background:var(--surface);padding:22px;display:flex;flex-direction:column;gap:8px}
+.svc svg{color:var(--moss)}
+.svc h3{font-family:var(--f-body);font-weight:600;font-size:16px;letter-spacing:0}
+.svc p{color:var(--ink-2);font-size:14px}
+.svc .tag{align-self:flex-start;margin-top:auto}
+@media (max-width:900px){.services{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.services{grid-template-columns:1fr}}
+
+.how{display:grid;grid-template-columns:1.2fr 1fr;gap:40px}
+@media (max-width:900px){.how{grid-template-columns:1fr}}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:18px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:44px 1fr;gap:14px;counter-increment:s}
+.steps li::before{content:counter(s);width:44px;height:44px;border-radius:50%;border:1px solid var(--moss);color:var(--moss);display:grid;place-items:center;font:500 16px var(--f-mono)}
+.steps b{display:block;font-size:16px;margin-bottom:2px}
+.steps p{color:var(--ink-2);font-size:14px}
+.rules{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px}
+.rules dl{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;margin:12px 0 0}
+.rules dt{color:var(--ink-3);font-size:13.5px}
+.rules dd{margin:0;font-weight:500;font-size:14px}
+
+.reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media (max-width:900px){.reviews{grid-template-columns:1fr}}
+.review{border-top:2px solid var(--ink);padding-top:16px;display:flex;flex-direction:column;gap:10px}
+.review p{font-size:15.5px}
+.review footer{font-size:13px;color:var(--ink-3)}
+.stars{color:var(--amber);letter-spacing:2px;font-size:14px}
+
+.faq{max-width:820px}
+.faq details{border-bottom:1px solid var(--line);padding:14px 0}
+.faq summary{cursor:pointer;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::after{content:"+";font:400 22px var(--f-mono);color:var(--ink-3);line-height:1}
+.faq details[open] summary::after{content:"–"}
+.faq details p{color:var(--ink-2);margin-top:8px;max-width:65ch}
+
+.footer{background:var(--side);color:var(--side-ink);padding-block:48px 32px;margin-top:40px}
+.foot-in{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:32px}
+.footer .logo small{color:var(--side-ink-2)}
+.footer h4{margin:0 0 10px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--side-ink-2)}
+.footer p,.footer a{font-size:14px;color:var(--side-ink)}
+.footer .copy{margin-top:32px;font-size:12.5px;color:var(--side-ink-2)}
+@media (max-width:760px){.foot-in{grid-template-columns:1fr}}
+
+/* modal */
+.overlay{position:fixed;inset:0;z-index:60;background:rgba(8,14,10,.55);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:max(24px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 24px max(12px,env(safe-area-inset-left,0px))}
+.modal{background:var(--bg);border-radius:16px;width:min(920px,100%);box-shadow:var(--shadow);overflow:hidden}
+.modal-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line);background:var(--surface)}
+.modal-h h3{font-size:22px}
+.x{width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:18px;flex:none}
+.modal-b{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:0}
+.modal-f{padding:22px;display:flex;flex-direction:column;gap:14px}
+.modal-s{padding:22px;background:var(--surface);border-left:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+@media (max-width:760px){.modal-b{grid-template-columns:1fr}.modal-s{border-left:0;border-top:1px solid var(--line)}}
+.checks{display:flex;flex-direction:column;gap:6px}
+.checks label{display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.checks input{width:18px;height:18px;flex:none;accent-color:var(--moss)}
+.checks .p{margin-left:auto;font-family:var(--f-mono);font-size:13px;color:var(--ink-2);white-space:nowrap}
+.err{color:var(--danger);font-size:13px;min-height:0}
+.success{padding:36px 28px;display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.success .big{font:500 28px var(--f-mono);color:var(--moss)}
+
+/* chat widget */
+.chat-fab{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:50;height:54px;padding:0 20px 0 16px;border-radius:999px;border:0;background:var(--primary);color:var(--on-primary);display:flex;align-items:center;gap:10px;font:600 14.5px var(--f-body);cursor:pointer;box-shadow:var(--shadow)}
+.badge{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--amber);color:var(--on-amber);font:600 11.5px var(--f-mono);display:inline-grid;place-items:center}
+.chat{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(86px + env(safe-area-inset-bottom,0px));z-index:55;width:min(370px,calc(100vw - 32px));height:min(540px,calc(100vh - 120px));background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
+.chat-h{display:flex;gap:12px;align-items:center;padding:14px 16px;background:var(--primary);color:var(--on-primary)}
+.ava{width:38px;height:38px;border-radius:50%;background:var(--amber);color:var(--on-amber);display:grid;place-items:center;font-weight:700;flex:none;position:relative}
+.ava.on::after{content:"";position:absolute;right:0;bottom:0;width:10px;height:10px;border-radius:50%;background:#5FD37A;border:2px solid var(--primary)}
+.chat-h b{display:block;font-size:15px}
+.chat-h small{opacity:.75;font-size:12.5px}
+.chat-h .x{margin-left:auto;background:transparent;color:inherit;border-color:color-mix(in oklab,var(--on-primary) 30%,transparent)}
+.msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.msg{max-width:84%;padding:9px 12px;border-radius:14px;font-size:14px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg time{display:block;font-size:10.5px;color:var(--ink-3);margin-top:3px;font-family:var(--f-mono)}
+.msg.them{background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px;align-self:flex-start}
+.msg.me{background:var(--moss-soft);border-bottom-right-radius:4px;align-self:flex-end}
+.msg .auto{font-size:10.5px;color:var(--ink-3);display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.08em}
+.typing{align-self:flex-start;font-size:13px;color:var(--ink-3);padding:4px 2px}
+.quick{display:flex;gap:6px;overflow-x:auto;padding:8px 12px 0;background:var(--surface)}
+.quick button{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:999px;padding:5px 11px;font:13px var(--f-body);cursor:pointer}
+.compose{display:flex;gap:8px;padding:10px 12px 12px;background:var(--surface);border-top:0}
+.compose input{height:42px}
+.compose .btn{height:42px;padding:0 14px}
+@media (max-width:560px){.chat{right:8px;left:8px;width:auto;bottom:calc(80px + env(safe-area-inset-bottom,0px))}.chat-fab span.t{display:none}.chat-fab{padding:0 16px}}
+
+#tip{position:fixed;z-index:70;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;padding:7px 10px;border-radius:7px;max-width:240px;line-height:1.4;box-shadow:var(--shadow)}
+#tip b{font-family:var(--f-mono);font-weight:500}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:80;background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:10px;font-size:14px;box-shadow:var(--shadow);max-width:calc(100vw - 32px)}
+
+/* ADMIN */
+#admin{min-height:100vh;background:var(--bg)}
+.login{min-height:100vh;display:grid;place-items:center;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));background:var(--side)}
+.login-card{background:var(--surface);border-radius:16px;padding:32px;width:min(400px,100%);display:flex;flex-direction:column;gap:16px;box-shadow:var(--shadow)}
+.login-card .demo{font-size:13px;color:var(--ink-2);background:var(--surface-2);padding:10px 12px;border-radius:8px}
+.adm{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:100vh}
+.side{background:var(--side);color:var(--side-ink);padding:20px 14px;display:flex;flex-direction:column;gap:20px;position:sticky;top:0;height:100vh}
+.side .logo{color:var(--side-ink);padding:4px 10px}
+.side .logo small{color:var(--side-ink-2)}
+.side nav{display:flex;flex-direction:column;gap:2px}
+.side nav button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:transparent;color:var(--side-ink-2);font:500 14.5px var(--f-body);padding:10px;border-radius:8px;cursor:pointer}
+.side nav button:hover{background:var(--side-hover);color:var(--side-ink)}
+.side nav button[aria-current="page"]{background:var(--side-hover);color:var(--side-ink)}
+.side nav button .badge{margin-left:auto}
+.side .me{margin-top:auto;display:flex;gap:10px;align-items:center;padding:10px;font-size:13px;color:var(--side-ink-2)}
+.side .me b{display:block;color:var(--side-ink);font-size:14px}
+.side .ava.on::after{border-color:var(--side)}
+.main{padding:24px 28px 48px;min-width:0}
+.main-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.main-h h1{font-size:30px}
+.main-h .sub{color:var(--ink-3);font-size:13.5px;margin-top:2px}
+@media (max-width:900px){
+  .adm{grid-template-columns:1fr}
+  .side{position:sticky;top:0;height:auto;z-index:20;flex-direction:row;align-items:center;padding:10px max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px));gap:12px;overflow-x:auto}
+  .side .logo{display:none}
+  .side nav{flex-direction:row}
+  .side nav button{white-space:nowrap;padding:8px 10px}
+  .side .me{display:none}
+  .main{padding:18px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px))}
+}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+@media (max-width:1100px){.kpis{grid-template-columns:1fr 1fr}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.kpi span{font-size:12.5px;color:var(--ink-3)}
+.kpi b{display:block;font:500 28px var(--f-mono);margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.kpi small{font-size:12.5px;color:var(--ink-2)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}
+.card h2{font-family:var(--f-body);font-weight:600;font-size:15.5px;letter-spacing:0;margin-bottom:12px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.card h2 small{font-weight:400;color:var(--ink-3);font-size:12.5px}
+.ov{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:1100px){.ov{grid-template-columns:1fr}}
+.ov .card.map{padding:0;overflow:hidden}
+.ov .card.map h2{padding:16px 18px 0}
+.ov .map-scroll svg{min-width:560px}
+.list{display:flex;flex-direction:column}
+.li{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.li:first-child{border-top:0}
+.li .grow{flex:1;min-width:0}
+.li .grow small{display:block;color:var(--ink-3);font-size:12.5px}
+.empty{color:var(--ink-3);font-size:14px;padding:8px 0}
+.chart svg{display:block;width:100%;height:auto}
+.chart .gl{stroke:var(--line);stroke-width:1}
+.chart .ax{font:500 10.5px var(--f-mono);fill:var(--ink-3)}
+.chart .bar{fill:var(--moss)}
+.chart .bar.we{fill:color-mix(in oklab,var(--moss) 70%,var(--amber))}
+.chart .hit{fill:transparent;cursor:default}
+.chart .hit:hover+.bar,.chart g:hover .bar{opacity:.8}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.toolbar input{width:260px;height:36px;font-size:14px}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{text-align:left;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--surface)}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right}
+td small{display:block;color:var(--ink-3);font-size:12.5px}
+td .acts{display:flex;gap:6px;justify-content:flex-end}
+td input,td select{height:34px;font-size:14px}
+td input.price{width:110px;font-family:var(--f-mono)}
+.tbl-foot{font-size:13px;color:var(--ink-3);padding:10px 2px}
+.gantt{overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;max-height:70vh}
+.g-row{display:grid;grid-template-columns:104px repeat(var(--days),40px);min-width:max-content}
+.g-row>*{grid-row:1;height:34px;border-bottom:1px solid var(--line)}
+.g-name{grid-column:1;position:sticky;left:0;z-index:2;background:var(--surface);border-right:1px solid var(--line);padding:0 10px;display:flex;align-items:center;gap:6px;font-size:13px;white-space:nowrap}
+.g-name b{font-family:var(--f-mono);font-weight:500}
+.g-name small{color:var(--ink-3)}
+.g-cell{border-right:1px solid color-mix(in oklab,var(--line) 60%,transparent)}
+.g-cell.we{background:var(--surface-2)}
+.g-cell.today{background:var(--amber-soft)}
+.g-head{position:sticky;top:0;z-index:3}
+.g-head>*{background:var(--surface);height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;font:500 11.5px var(--f-mono);color:var(--ink-2)}
+.g-head>* small{font:500 9.5px var(--f-body);color:var(--ink-3)}
+.g-head .g-name{z-index:4;font:600 11px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.g-head .today{background:var(--amber-soft);color:var(--ink)}
+.g-row.hl .g-name{background:var(--amber-soft)}
+.g-bar{z-index:1;margin:5px 2px;height:24px!important;border:0!important;border-radius:5px;border-left:3px solid var(--moss)!important;background:var(--moss-soft);font-size:11.5px;padding:0 6px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;cursor:default}
+.g-bar.new{background:var(--amber-soft);border-left-color:var(--amber)!important}
+.g-bar.in{background:var(--info-soft);border-left-color:var(--info)!important}
+.g-bar.done{background:var(--surface-2);border-left-color:var(--ink-3)!important;color:var(--ink-3)}
+.g-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);margin-bottom:12px}
+.chats{display:grid;grid-template-columns:300px minmax(0,1fr);height:min(640px,calc(100vh - 150px));background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.c-list{border-right:1px solid var(--line);overflow-y:auto}
+.c-item{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:var(--surface);color:var(--ink);padding:12px 14px;cursor:pointer;font:14px var(--f-body)}
+.c-item[aria-current="true"]{background:var(--surface-2)}
+.c-item .grow{flex:1;min-width:0}
+.c-item .grow small{display:block;color:var(--ink-3);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c-item .ava{width:34px;height:34px;font-size:13px;background:var(--moss-soft);color:var(--ink)}
+.c-thread{display:flex;flex-direction:column;min-width:0}
+.c-thread .head{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
+.c-thread .head small{color:var(--ink-3);display:block;font-size:12.5px}
+.c-thread .msg.me{background:var(--primary);color:var(--on-primary)}
+.c-thread .msg.me time,.c-thread .msg.me .auto{color:color-mix(in oklab,var(--on-primary) 70%,transparent)}
+@media (max-width:760px){.chats{grid-template-columns:1fr;height:auto}.c-list{max-height:220px;border-right:0;border-bottom:1px solid var(--line)}.c-thread{height:520px}}
+.set{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.set{grid-template-columns:1fr}}
+.sw{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.sw:first-of-type{border-top:0}
+.sw input{width:40px;height:22px;accent-color:var(--moss)}
+</style>
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+
+<div id="site">
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="logo" href="#top">ЛОКАРНО<small>коттеджи в лесу</small></a>
+      <nav class="nav" id="nav">
+        <a href="#map">Карта посёлка</a>
+        <a href="#cottages">Коттеджи</a>
+        <a href="#services">Услуги</a>
+        <a href="#how">Как забронировать</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+      <div class="top-actions">
+        <a class="btn btn-ghost btn-sm hide-m" href="#admin">Админ-панель</a>
+        <a class="btn btn-primary btn-sm" href="#map">Забронировать</a>
+        <button class="menu-btn" id="menuBtn" aria-label="Открыть меню" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 5h14M2 9h14M2 13h14"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="wrap hero-in">
+        <div class="hero-text">
+          <p class="eyebrow">Загородный посёлок · Московская область</p>
+          <h1>Коттеджи в сосновом лесу в 30 минутах от МКАД</h1>
+          <p class="lead">Барнхаусы на 4–8 гостей с террасой, камином и своей баней. Выберите участок на карте посёлка, проверьте даты и забронируйте онлайн.</p>
+          <form class="search" id="heroSearch">
+            <label class="field"><span>Заезд</span><input type="date" id="hsIn" required></label>
+            <label class="field"><span>Выезд</span><input type="date" id="hsOut" required></label>
+            <label class="field"><span>Гостей</span><select id="hsG"></select></label>
+            <button class="btn btn-amber" type="submit">Найти свободные</button>
+          </form>
+        </div>
+        <figure class="hero-fig">
+          <img src="../../img/lokarno-plan.jpg" alt="Генплан посёлка Локарно с высоты: дома среди леса, улицы и зоны отдыха">
+          <figcaption>Генплан посёлка · 9,88 га в окружении леса</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="facts">
+      <div class="wrap facts-in">
+        <div class="fact"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l5 7h-3l4 6h-5v7h-2v-7H6l4-6H7z"/></svg><div><b>Лес вокруг</b><span>сосны и берёзы со всех сторон</span></div></div>
+        <div class="fact"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 15l2-6h14l2 6v3H3z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg><div><b>30 мин</b><span>от МКАД, парковка у дома</span></div></div>
+        <div class="fact"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11l9-7 9 7v10H3z"/><path d="M10 21v-6h4v6"/></svg><div><b id="factCount">69 коттеджей</b><span id="factSotki">участки от 7,8 до 13,2 сотки</span></div></div>
+        <div class="fact"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><div><b>9,88 га</b><span>закрытая территория с КПП</span></div></div>
+      </div>
+    </section>
+
+    <section class="block" id="map">
+      <div class="wrap">
+        <div class="sec-head">
+          <div><p class="eyebrow">Бронирование на карте</p><h2>Выберите свой участок</h2></div>
+          <p>Зелёные участки свободны на выбранные даты, серые заняты. Нажмите на участок, чтобы увидеть дом, цену и календарь занятости.</p>
+        </div>
+        <div class="map-tools">
+          <label class="field"><span>Заезд</span><input type="date" id="mIn"></label>
+          <label class="field"><span>Выезд</span><input type="date" id="mOut"></label>
+          <label class="field g"><span>Гостей</span><select id="mG"></select></label>
+          <div class="chips" id="typeChips" role="group" aria-label="Тип коттеджа"></div>
+          <label class="toggle"><input type="checkbox" id="onlyFree"> Только свободные</label>
+          <div class="seg" role="group" aria-label="Вид карты">
+            <button type="button" data-view="plan" aria-pressed="true">Схема</button>
+            <button type="button" data-view="photo" aria-pressed="false">Генплан-фото</button>
+          </div>
+        </div>
+        <div class="map-grid">
+          <div class="map-card">
+            <div class="map-scroll" id="planWrap"><svg id="plan" viewBox="0 0 1000 740" role="img" aria-label="Схема посёлка Локарно с участками"></svg></div>
+            <img class="map-photo" id="planPhoto" src="../../img/lokarno-plan.jpg" alt="Генплан посёлка Локарно" hidden>
+            <div class="map-count" id="mapCount"></div>
+            <div class="map-legend">
+              <span><i style="background:var(--plot-free);border-color:var(--plot-free-stroke)"></i>Свободен</span>
+              <span><i style="background:var(--plot-busy);border-color:var(--plot-busy-stroke)"></i>Занят на даты</span>
+              <span><i style="background:var(--plot-busy);border-color:var(--plot-busy-stroke);border-style:dashed"></i>На обслуживании</span>
+              <span><i style="background:transparent;border:3px solid var(--amber)"></i>Выбран</span>
+              <span><i style="background:var(--amber-soft);border-color:var(--amber)"></i>Зоны отдыха</span>
+            </div>
+          </div>
+          <aside class="panel" id="panel" aria-live="polite"></aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="cottages" style="background:var(--surface);border-block:1px solid var(--line)">
+      <div class="wrap">
+        <div class="sec-head">
+          <div><p class="eyebrow">Три планировки</p><h2>Коттеджи</h2></div>
+          <p>Все дома — барнхаусы с панорамным остеклением, тёплым полом и полностью оборудованной кухней. Постельное бельё, полотенца и дрова включены.</p>
+        </div>
+        <div class="types" id="types"></div>
+      </div>
+    </section>
+
+    <section class="block" id="services">
+      <div class="wrap">
+        <div class="sec-head">
+          <div><p class="eyebrow">Инфраструктура</p><h2>Услуги посёлка</h2></div>
+          <p>Платные услуги можно добавить при бронировании или заказать у администратора в чате.</p>
+        </div>
+        <div class="services">
+          <div class="svc"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><h3>КПП и охрана 24/7</h3><p>Въезд по номеру брони, видеонаблюдение по периметру, парковка у каждого дома.</p><span class="tag">Включено</span></div>
+          <div class="svc"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3c2 3 5 5 5 9a5 5 0 01-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z"/><path d="M5 21l14-3M5 18l14 3"/></svg><h3>Костровая зона</h3><p>Общая площадка с кострищем, лавками и навесом у ул. Бельведер. Дрова бесплатно.</p><span class="tag">Включено</span></div>
+          <div class="svc"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20c3-6 6-2 8-8s5-6 8-8"/><circle cx="4" cy="20" r="1.5"/><circle cx="20" cy="4" r="1.5"/></svg><h3>Экотропа к озеру</h3><p>Лесной маршрут 2,4 км от западного выхода до озера, с настилами и указателями.</p><span class="tag">Включено</span></div>
+          <div class="svc"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21V10l9-6 9 6v11z"/><path d="M8 21v-5h8v5M9 9c0-1 1-1 1-2M12 9c0-1 1-1 1-2M15 9c0-1 1-1 1-2"/></svg><h3>Общественная баня</h3><p>Русская баня на дровах с купелью и комнатой отдыха до 8 человек. Сеанс 3 часа.</p><span class="tag">4 500 ₽ / сеанс</span></div>
+          <div class="svc"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="17" r="3.5"/><circle cx="18" cy="17" r="3.5"/><path d="M6 17l4-8h5l3 8M10 9l2 8"/></svg><h3>Прокат</h3><p>Велосипеды, сапборды, снегоступы и санки — в зависимости от сезона.</p><span class="tag">от 500 ₽ / час</span></div>
+          <div class="svc"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 11h16a8 8 0 01-16 0zM8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4"/></svg><h3>Завтраки и мангал</h3><p>Доставка завтраков к дому с 8:00 до 11:00, мангальный набор с углём и решёткой.</p><span class="tag">от 900 ₽</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="how" style="padding-top:24px">
+      <div class="wrap how">
+        <div>
+          <p class="eyebrow">Бронирование</p>
+          <h2 style="font-size:clamp(28px,3.2vw,40px);margin:8px 0 24px">Как забронировать</h2>
+          <ol class="steps">
+            <li><div><b>Выберите коттедж на карте</b><p>Укажите даты и число гостей — карта покажет, какие дома свободны.</p></div></li>
+            <li><div><b>Оставьте заявку</b><p>Имя и телефон, при желании — баня, ранний заезд или питомец. Сумма считается сразу.</p></div></li>
+            <li><div><b>Подтверждение и предоплата 30%</b><p>Администратор перезвонит в течение 15 минут и пришлёт ссылку на оплату. После оплаты бронь закреплена за вами.</p></div></li>
+          </ol>
+        </div>
+        <div class="rules">
+          <p class="eyebrow">Правила проживания</p>
+          <dl>
+            <dt>Заезд</dt><dd>с 15:00, ранний — с 11:00 за доплату</dd>
+            <dt>Выезд</dt><dd>до 12:00, поздний — до 16:00</dd>
+            <dt>Минимум</dt><dd>1 ночь в будни, 2 ночи в праздники</dd>
+            <dt>Выходные</dt><dd>ночи пт и сб +20% к цене</dd>
+            <dt>Питомцы</dt><dd>можно, 1 500 ₽ за проживание</dd>
+            <dt>Тишина</dt><dd>с 23:00 до 8:00</dd>
+            <dt>Отмена</dt><dd>бесплатно за 7 дней до заезда</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="reviews" style="padding-top:24px">
+      <div class="wrap">
+        <div class="sec-head"><div><p class="eyebrow">Отзывы гостей</p><h2>Что говорят гости</h2></div></div>
+        <div class="reviews">
+          <article class="review"><div class="stars" aria-label="5 из 5">★★★★★</div><p>Приехали вчетвером на выходные в Барн S. Тишина, сосны прямо за окном, вечером сидели у камина. Баню взяли на субботу — очень советуем.</p><footer>Екатерина · Барн S, октябрь</footer></article>
+          <article class="review"><div class="stars" aria-label="5 из 5">★★★★★</div><p>Отмечали юбилей двумя семьями в Барн L. Своя баня, большая терраса, дети гуляли по экотропе до озера. Администратор помогла с ранним заездом.</p><footer>Дмитрий · Барн L, сентябрь</footer></article>
+          <article class="review"><div class="stars" aria-label="4 из 5">★★★★☆</div><p>Удобно, что дом выбираешь сам на карте — взяли участок у леса на ул. Бельведер. Единственное, хотелось бы больше розеток на террасе.</p><footer>Анна · Барн M, август</footer></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="faq" style="padding-top:24px">
+      <div class="wrap">
+        <div class="sec-head"><div><p class="eyebrow">Вопросы</p><h2>Частые вопросы</h2></div></div>
+        <div class="faq">
+          <details><summary>Что есть в доме?</summary><p>Кухня с плитой, духовкой, посудомоечной машиной и посудой, кофемашина, Wi-Fi, Smart TV, тёплый пол, бельё и полотенца, мангал на террасе. В Барн M и L — камин, в Барн L — своя баня.</p></details>
+          <details><summary>Как происходит оплата?</summary><p>После подтверждения заявки вы вносите предоплату 30% по ссылке. Остаток оплачивается при заезде картой или по СБП.</p></details>
+          <details><summary>Можно ли с детьми?</summary><p>Да. По запросу бесплатно поставим детскую кроватку и стульчик. На территории есть детская площадка у костровой зоны.</p></details>
+          <details><summary>Что, если планы изменились?</summary><p>Отмена за 7 дней и раньше — бесплатно, предоплата возвращается полностью. Позже — можно перенести даты в течение 3 месяцев.</p></details>
+          <details><summary>Есть ли магазин рядом?</summary><p>Продуктовый магазин в 5 минутах на машине. Также можно заказать доставку продуктов к дому через администратора.</p></details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="contacts">
+    <div class="wrap">
+      <div class="foot-in">
+        <div><div class="logo">ЛОКАРНО<small>коттеджи в лесу</small></div><p style="margin-top:16px;max-width:36ch;color:var(--side-ink-2)">Загородный посёлок в окружении леса. Аренда коттеджей посуточно и на выходные.</p></div>
+        <div><h4>Контакты</h4><p class="mono">+7 (495) 000-00-00</p><p>hello@lokarno.ru</p><p style="margin-top:8px">Ежедневно 9:00–22:00</p></div>
+        <div><h4>Гостям</h4><p><a href="#map">Карта и бронирование</a></p><p><a href="#how">Правила проживания</a></p><p><a href="#faq">Частые вопросы</a></p><p><a href="#admin">Вход для администратора</a></p></div>
+      </div>
+      <p class="copy">Макет сайта · данные бронирований демонстрационные и хранятся только в этом браузере</p>
+    </div>
+  </footer>
+
+  <button class="chat-fab" id="chatFab" aria-label="Открыть чат с администратором"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v11H9l-5 4z"/></svg><span class="t">Чат с администратором</span><span class="badge" id="chatBadge" hidden>1</span></button>
+  <div class="chat" id="chat" hidden role="dialog" aria-label="Чат с администратором">
+    <div class="chat-h"><div class="ava on">О</div><div><b>Ольга, администратор</b><small>на связи 9:00–22:00 · отвечает за 2 мин</small></div><button class="x" id="chatClose" aria-label="Закрыть чат">×</button></div>
+    <div class="msgs" id="chatMsgs"></div>
+    <div class="quick" id="chatQuick">
+      <button type="button">Есть свободные на выходные?</button>
+      <button type="button">Можно с собакой?</button>
+      <button type="button">Сколько стоит?</button>
+      <button type="button">Как работает баня?</button>
+      <button type="button">Как добраться?</button>
+    </div>
+    <form class="compose" id="chatForm"><input id="chatInput" placeholder="Напишите сообщение…" autocomplete="off" aria-label="Сообщение"><button class="btn btn-primary" type="submit" aria-label="Отправить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l16-8-6 16-2-7z"/></svg></button></form>
+  </div>
+</div>
+
+<div id="admin" hidden></div>
+<div class="overlay" id="modal" hidden></div>
+<div id="tip" hidden></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(()=>{
+/* ---------- utils ---------- */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const DAY=864e5, pad=n=>String(n).padStart(2,'0');
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
+const addDays=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
+const addS=(s,n)=>iso(addDays(parse(s),n));
+const N0=new Date(), TODAY=new Date(N0.getFullYear(),N0.getMonth(),N0.getDate()), TS=iso(TODAY);
+const diff=(a,b)=>Math.round((parse(b)-parse(a))/DAY);
+const fmt=(s,o={day:'numeric',month:'short'})=>parse(s).toLocaleDateString('ru-RU',o).replace('.','');
+const wd=s=>parse(s).toLocaleDateString('ru-RU',{weekday:'short'});
+const rub=n=>Math.round(n).toLocaleString('ru-RU')+' ₽';
+const hm=t=>{const d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes())};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const plural=(n,a,b,c)=>{const m=n%10,h=n%100;return m===1&&h!==11?a:(m>=2&&m<=4&&(h<10||h>=20)?b:c)};
+function rngF(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+/* ---------- catalogue ---------- */
+const TYPES={
+  S:{name:'Барн S',guests:4,beds:2,area:72,price:9500,minS:7.8,feats:['Терраса','Мангал','Wi-Fi','Тёплый пол'],text:'Уютный дом для пары или семьи с детьми: гостиная-кухня, две спальни, терраса с видом на лес.'},
+  M:{name:'Барн M',guests:6,beds:3,area:110,price:14900,minS:9.1,feats:['Камин','Терраса','Мангал','Wi-Fi'],text:'Для двух семей или компании друзей: камин, второй свет, три спальни и большая терраса.'},
+  L:{name:'Барн L',guests:8,beds:4,area:156,price:21500,minS:12.2,feats:['Своя баня','Камин','Панорамные окна','Wi-Fi'],text:'Самые большие участки посёлка, собственная баня с купелью, четыре спальни и две ванные.'}
+};
+const SERVICES=[
+  {id:'bath',name:'Общественная баня, 3 часа',price:4500},
+  {id:'early',name:'Ранний заезд с 11:00',price:2000},
+  {id:'late',name:'Поздний выезд до 16:00',price:2000},
+  {id:'pet',name:'Питомец',price:1500},
+  {id:'bbq',name:'Мангальный набор',price:900}
+];
+const STATUS={new:'Новая',confirmed:'Подтверждена',in:'Проживают',done:'Завершена',cancelled:'Отменена'};
+const BLOCKS=[
+  {x:500,y:100,w:92,h:172,c:1,r:4,side:['r'],st:['ул. Бальбидо']},
+  {x:408,y:186,w:90,h:86,c:1,r:2,side:['r'],st:['ул. Центральная']},
+  {x:640,y:22,w:232,h:60,c:3,r:1,side:['b','b','b'],st:['ул. Одзю','ул. Одзю','ул. Одзю']},
+  {x:608,y:98,w:264,h:174,c:2,r:4,side:['l','r'],st:['ул. Бальбидо','ул. Бельведер']},
+  {x:888,y:98,w:82,h:222,c:1,r:5,side:['l'],st:['ул. Бельведер']},
+  {x:292,y:296,w:80,h:296,c:1,r:7,side:['r'],st:['ул. Синьявно']},
+  {x:388,y:288,w:244,h:304,c:2,r:7,side:['l','r'],st:['ул. Синьявно','ул. Гранде']},
+  {x:648,y:288,w:224,h:354,c:2,r:8,side:['l','r'],st:['ул. Гранде','ул. Бельведер']},
+  {x:888,y:410,w:82,h:294,c:1,r:7,side:['l'],st:['ул. Бельведер']},
+  {x:648,y:658,w:224,h:50,c:3,r:1,side:['t','t','t'],st:['ул. Капо','ул. Капо','ул. Капо']}
+];
+const BOUND=[[282,300],[500,90],[570,14],[880,14],[978,80],[978,712],[640,712],[632,690],[462,690],[380,612],[282,612]];
+const COTTAGES=[];
+BLOCKS.forEach(b=>{const cw=b.w/b.c,rh=b.h/b.r;for(let r=0;r<b.r;r++)for(let c=0;c<b.c;c++){
+  const s=Math.round(cw*rh*0.0023*10)/10, t=s<9?'S':s<12?'M':'L';
+  COTTAGES.push({id:COTTAGES.length+1,x:b.x+c*cw,y:b.y+r*rh,w:cw,h:rh,side:b.side[c],street:b.st[c],sotki:s,type:t,
+    basePrice:TYPES[t].price+Math.round((s-TYPES[t].minS)*600/100)*100});
+}});
+const C=id=>COTTAGES.find(c=>c.id===id);
+
+/* ---------- data (demo store) ---------- */
+const KEY='lokarno-demo-v2';
+let DB;
+function quote(c,a,b){let sum=0,we=0;const n=diff(a,b);const p=price(c);for(let i=0;i<n;i++){const d=addDays(parse(a),i).getDay();if(d===5||d===6){we++;sum+=Math.round(p*1.2/100)*100}else sum+=p}return{n,we,sum}}
+function price(c){return (DB.cot[c.id]&&DB.cot[c.id].price)||c.basePrice}
+function cstat(c){return (DB.cot[c.id]&&DB.cot[c.id].status)||'active'}
+function seed(){
+  const R=rngF(20261123);
+  const first=['Анна','Дмитрий','Мария','Алексей','Екатерина','Сергей','Ольга','Иван','Наталья','Михаил','Татьяна','Павел','Юлия','Андрей','Ксения','Артём','Елена','Никита','Вера','Роман'];
+  const last=[['Смирнова','Смирнов'],['Кузнецова','Кузнецов'],['Попова','Попов'],['Волкова','Волков'],['Соколова','Соколов'],['Лебедева','Лебедев'],['Морозова','Морозов'],['Новикова','Новиков'],['Фёдорова','Фёдоров'],['Орлова','Орлов'],['Захарова','Захаров'],['Белова','Белов']];
+  const fem=new Set(['Анна','Мария','Екатерина','Ольга','Наталья','Татьяна','Юлия','Ксения','Елена','Вера']);
+  const bookings=[];
+  const db={bookings,cot:{},chats:{},seq:0,authed:false};
+  DB=db;
+  COTTAGES.forEach(c=>{
+    let d=-14+Math.floor(R()*6);
+    while(d<48){
+      d+=Math.floor(R()*5);const len=1+Math.floor(R()*4);
+      if(R()<0.8){
+        const a=iso(addDays(TODAY,d)),b=iso(addDays(TODAY,d+len));
+        const f=first[Math.floor(R()*first.length)],l=last[Math.floor(R()*last.length)][fem.has(f)?0:1];
+        let st=b<=TS?'done':(a<TS?'in':(R()<0.05?'new':'confirmed'));
+        if(st==='confirmed'&&R()<0.05)st='cancelled';
+        const g=1+Math.floor(R()*TYPES[c.type].guests);
+        bookings.push({cid:c.id,in:a,out:b,guests:Math.max(2,g),name:f+' '+l,phone:'+7 9'+Math.floor(10+R()*89)+' '+Math.floor(100+R()*899)+'-'+pad(Math.floor(R()*99))+'-'+pad(Math.floor(R()*99)),services:R()<0.3?['bath']:[],comment:'',status:st,source:R()<0.7?'Сайт':'Телефон',created:Date.now()-Math.floor(R()*20)*DAY});
+      }
+      d+=len;
+    }
+  });
+  bookings.sort((x,y)=>x.in<y.in?-1:x.in>y.in?1:x.cid-y.cid);
+  bookings.forEach((b,i)=>{b.id='L-'+(1001+i);const q=quote(C(b.cid),b.in,b.out);b.amount=q.sum+b.services.length*4500});
+  db.seq=1001+bookings.length;
+  // one cottage on maintenance
+  db.cot[37]={status:'off'};
+  const now=Date.now(),m=60000;
+  db.chats={
+    me:{name:'Вы (гость сайта)',msgs:[{from:'admin',text:'Здравствуйте! Я Ольга, администратор «Локарно». Помогу выбрать коттедж и даты — спрашивайте.',t:now-2*m}],ua:0,ug:0},
+    c1:{name:'Марина Ковалёва',msgs:[{from:'guest',text:'Добрый день! Можно приехать с лабрадором в Барн M?',t:now-95*m},{from:'admin',text:'Здравствуйте, Марина! Да, с питомцем можно, доплата 1 500 ₽ за проживание.',t:now-90*m},{from:'guest',text:'Отлично. А на следующие выходные есть что-нибудь ближе к лесу?',t:now-14*m}],ua:1,ug:0},
+    c2:{name:'Алексей Громов',msgs:[{from:'guest',text:'Баню нужно бронировать заранее или можно на месте?',t:now-38*m}],ua:1,ug:0},
+    c3:{name:'Ирина Белова',msgs:[{from:'guest',text:'Спасибо, всё понравилось! Приедем ещё на Новый год.',t:now-26*60*m},{from:'admin',text:'Ирина, будем рады! Новогодние даты уже открыты на карте.',t:now-25*60*m}],ua:0,ug:0}
+  };
+  return db;
+}
+function load(){try{const s=localStorage.getItem(KEY);if(s){const d=JSON.parse(s);if(d&&d.v===1&&d.day===TS){DB=d;return}}}catch(e){}seed();DB.v=1;DB.day=TS;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}}
+load();
+
+const live=b=>b.status!=='cancelled';
+function isFree(cid,a,b,ignore){return !DB.bookings.some(k=>k.cid===cid&&live(k)&&k.id!==ignore&&k.in<b&&k.out>a)}
+function occupiedOn(s){return DB.bookings.filter(k=>live(k)&&k.in<=s&&k.out>s)}
+
+/* ---------- site state ---------- */
+const dow=TODAY.getDay(), toFri=(5-dow+7)%7;
+const S={in:iso(addDays(TODAY,toFri)),out:iso(addDays(TODAY,toFri+2)),guests:2,type:'all',onlyFree:false,sel:null,view:'plan'};
+
+/* ---------- plan SVG ---------- */
+function inPoly(x,y,p){let o=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const[xi,yi]=p[i],[xj,yj]=p[j];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))o=!o}return o}
+const LAKE={cx:118,cy:668,rx:96,ry:52};
+let TREES='';
+(function(){const R=rngF(7),t=[];for(let i=0;i<900&&t.length<430;i++){const x=-10+R()*1020,y=-10+R()*760,r=6+R()*8,m=r+5;
+  if([[0,0],[m,0],[-m,0],[0,m],[0,-m]].some(([dx,dy])=>inPoly(x+dx,y+dy,BOUND)))continue;
+  if(((x-LAKE.cx)/(LAKE.rx+m))**2+((y-LAKE.cy)/(LAKE.ry+m))**2<1)continue;
+  if(Math.abs(x-600)<18&&y<30)continue;
+  t.push([x,y,r,R()])}
+  t.sort((a,b)=>a[1]-b[1]);
+  TREES=t.map(([x,y,r,k])=>`<circle class="${k<.5?'t1':'t2'}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"/><circle class="t3" cx="${(x-r*.3).toFixed(1)}" cy="${(y-r*.3).toFixed(1)}" r="${(r*.45).toFixed(1)}" opacity=".55"/>`).join('');
+})();
+const ROADS=['M520 90 H880 V650','M640 650 H880','M380 280 H880','M380 280 V600 H640','M640 280 V650','M600 0 V280'];
+const RLABELS=[['ул. Одзю',760,90,0],['ул. Бельведер',880,470,-90],['ул. Бальбидо',600,190,-90],['ул. Центральная',760,280,0],['ул. Синьявно',380,450,-90],['ул. Гранде',640,470,-90],['ул. Капо',760,650,0]];
+function plotSVG(c){
+  const hw=24,hh=15;let hx,hy,nx,ny,anc='start';
+  if(c.side==='r'){hx=c.x+c.w-8-hw;hy=c.y+c.h/2-hh/2;nx=c.x+10;ny=c.y+c.h/2+4}
+  else if(c.side==='l'){hx=c.x+8;hy=c.y+c.h/2-hh/2;nx=c.x+c.w-10;ny=c.y+c.h/2+4;anc='end'}
+  else if(c.side==='t'){hx=c.x+c.w/2-hw/2;hy=c.y+7;nx=c.x+8;ny=c.y+c.h-8}
+  else {hx=c.x+c.w/2-hw/2;hy=c.y+c.h-7-hh;nx=c.x+8;ny=c.y+15}
+  return `<g class="plot" data-id="${c.id}" tabindex="0" role="button" aria-label="Коттедж ${c.id}, ${TYPES[c.type].name}, ${c.street}">
+  <rect class="lot" x="${(c.x+1.5).toFixed(1)}" y="${(c.y+1.5).toFixed(1)}" width="${(c.w-3).toFixed(1)}" height="${(c.h-3).toFixed(1)}" rx="3"/>
+  <rect class="roof" x="${hx.toFixed(1)}" y="${hy.toFixed(1)}" width="${hw}" height="${hh}" rx="1.5"/>
+  <line class="ridge" x1="${(hx+3).toFixed(1)}" y1="${(hy+hh/2).toFixed(1)}" x2="${(hx+hw-3).toFixed(1)}" y2="${(hy+hh/2).toFixed(1)}"/>
+  <rect class="lamp" x="${(hx+hw/2-3).toFixed(1)}" y="${(hy+hh-4.5).toFixed(1)}" width="6" height="3" rx="1"/>
+  <text class="pnum" x="${nx.toFixed(1)}" y="${ny.toFixed(1)}" text-anchor="${anc}">${c.id}</text></g>`;
+}
+function planSVG(){
+  const poly=BOUND.map(p=>p.join(',')).join(' ');
+  return `<rect x="0" y="0" width="1000" height="740" fill="var(--map-ground)"/>
+  <ellipse class="water" cx="${LAKE.cx}" cy="${LAKE.cy}" rx="${LAKE.rx}" ry="${LAKE.ry}"/>
+  <text class="mlabel" x="${LAKE.cx}" y="${LAKE.cy+4}" text-anchor="middle">Озеро</text>
+  <path class="trail" d="M330 612 C 318 640, 270 650, 214 660"/>
+  <path class="trail" d="M120 616 C 40 580, 30 470, 110 420 S 230 360, 300 326"/>
+  <text class="mlabel" x="70" y="520" transform="rotate(-62 70 520)">экотропа</text>
+  ${TREES}
+  <polygon class="inner" points="${poly}"/>
+  <polygon class="bound" points="${poly}"/>
+  ${ROADS.map(d=>`<path class="road-edge" d="${d}"/>`).join('')}
+  ${ROADS.map(d=>`<path class="road" d="${d}"/>`).join('')}
+  ${RLABELS.map(([t,x,y,r])=>`<text class="rlabel" x="${x}" y="${y}" dy="3.3" text-anchor="middle" transform="rotate(${r} ${x} ${y})">${t}</text>`).join('')}
+  <rect class="zone" x="890" y="328" width="78" height="74" rx="6"/>
+  <circle cx="929" cy="356" r="11" fill="var(--amber)"/><path d="M929 349c3 4 5 5 5 9a5 5 0 01-10 0c0-2 2-4 2-4 0 2 1 3 2 3 0-3-1-5 1-8z" fill="var(--amber-soft)"/>
+  <text class="zlabel" x="929" y="388" text-anchor="middle">Костровая</text>
+  <rect class="zone" x="472" y="610" width="158" height="70" rx="6"/>
+  <rect x="520" y="626" width="34" height="22" rx="2" fill="var(--house)"/><rect x="560" y="632" width="18" height="16" rx="2" fill="var(--house)"/>
+  <text class="zlabel" x="551" y="668" text-anchor="middle">Баня · купель</text>
+  <rect x="548" y="38" width="38" height="30" rx="3" fill="var(--house)"/>
+  <text class="zlabel" x="540" y="57" text-anchor="end">КПП</text>
+  <path class="mk-main" d="M590 0 L610 0 L600 14 Z"/>
+  <path class="mk-exit" d="M318 606 L336 606 L327 620 Z"/>
+  <path class="mk-exit" d="M978 676 L990 690 L974 694 Z"/>
+  ${COTTAGES.map(plotSVG).join('')}`;
+}
+function bindPlan(svg,onPick,tipFn){
+  svg.addEventListener('click',e=>{const g=e.target.closest('.plot');if(g)onPick(+g.dataset.id)});
+  svg.addEventListener('keydown',e=>{const g=e.target.closest('.plot');if(g&&(e.key==='Enter'||e.key===' ')){e.preventDefault();onPick(+g.dataset.id)}});
+  svg.addEventListener('mousemove',e=>{const g=e.target.closest('.plot');if(!g){hideTip();return}showTip(tipFn(+g.dataset.id),e.clientX,e.clientY)});
+  svg.addEventListener('mouseleave',hideTip);
+}
+const tip=$('#tip');
+function showTip(h,x,y){tip.innerHTML=h;tip.hidden=false;const w=tip.offsetWidth,hh=tip.offsetHeight;let l=x+14,t=y+14;if(l+w>innerWidth-8)l=x-w-14;if(t+hh>innerHeight-8)t=y-hh-14;tip.style.left=l+'px';tip.style.top=t+'px'}
+function hideTip(){tip.hidden=true}
+
+/* ---------- site rendering ---------- */
+const plan=$('#plan');plan.innerHTML=planSVG();
+const siteStatus=c=>cstat(c)==='off'?'off':(isFree(c.id,S.in,S.out)?'free':'busy');
+const matches=c=>(S.type==='all'||c.type===S.type)&&TYPES[c.type].guests>=S.guests;
+bindPlan(plan,id=>{S.sel=id;renderSite();if(innerWidth<1060)$('#panel').scrollIntoView({block:'start'})},id=>{const c=C(id),st=siteStatus(c);
+  return `<b>№${id}</b> · ${TYPES[c.type].name} · до ${TYPES[c.type].guests} гостей<br>${st==='free'?'Свободен':st==='busy'?'Занят на эти даты':'На обслуживании'} · ${rub(price(c))}/ночь`});
+
+function guestOpts(sel,max=8){sel.innerHTML=Array.from({length:max},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('')}
+guestOpts($('#hsG'));guestOpts($('#mG'));
+$('#typeChips').innerHTML=[['all','Все'],['S','Барн S'],['M','Барн M'],['L','Барн L']].map(([k,t])=>`<button type="button" class="chip" data-type="${k}" aria-pressed="false">${t}</button>`).join('');
+['#hsIn','#hsOut','#mIn','#mOut'].forEach(s=>$(s).min=TS);
+
+function syncInputs(){$('#hsIn').value=$('#mIn').value=S.in;$('#hsOut').value=$('#mOut').value=S.out;$('#hsG').value=$('#mG').value=S.guests;$('#hsOut').min=$('#mOut').min=addS(S.in,1);
+  $$('#typeChips .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.type===S.type));$('#onlyFree').checked=S.onlyFree}
+function setDates(a,b){if(!a)return;if(a<TS)a=TS;if(!b||b<=a)b=addS(a,Math.max(1,diff(S.in,S.out)||1));S.in=a;S.out=b}
+
+function renderSite(){
+  syncInputs();
+  let free=0,match=0;
+  $$('.plot',plan).forEach(g=>{const c=C(+g.dataset.id),st=siteStatus(c),m=matches(c);if(m){match++;if(st==='free')free++}
+    g.classList.toggle('free',st==='free');g.classList.toggle('busy',st==='busy');g.classList.toggle('off',st==='off');
+    g.classList.toggle('dim',!m||(S.onlyFree&&st!=='free'));g.classList.toggle('sel',S.sel===c.id)});
+  $('#mapCount').innerHTML=`Свободно <b>${free}</b> из ${match} · ${fmt(S.in)} – ${fmt(S.out)}`;
+  renderPanel(free,match);
+}
+function nightsTxt(n){return n+' '+plural(n,'ночь','ночи','ночей')}
+function renderPanel(free,match){
+  const P=$('#panel'),n=diff(S.in,S.out);
+  if(!S.sel){
+    const list=COTTAGES.filter(c=>matches(c)&&siteStatus(c)==='free').sort((a,b)=>price(a)-price(b)).slice(0,5);
+    P.innerHTML=`<div><p class="eyebrow">Ваши даты</p><h3 style="margin-top:6px">${fmt(S.in)} — ${fmt(S.out)}</h3><p class="muted" style="margin-top:4px">${nightsTxt(n)} · ${S.guests} ${plural(S.guests,'гость','гостя','гостей')}</p></div>
+    <p class="muted">Свободно <b>${free}</b> ${plural(free,'коттедж','коттеджа','коттеджей')} из ${match} подходящих. Нажмите на участок на карте или выберите из самых доступных:</p>
+    ${list.length?`<ul class="suggest">${list.map(c=>`<li><button type="button" data-pick="${c.id}"><span>№${c.id} · ${TYPES[c.type].name}<br><small style="color:var(--ink-3)">${c.street}</small></span><b>${rub(price(c))}</b></button></li>`).join('')}</ul>`
+      :`<p class="note warn">На эти даты свободных коттеджей под ваш запрос нет. Попробуйте сдвинуть даты или напишите администратору — подберём вариант.</p>`}
+    <button class="btn btn-ghost btn-block" type="button" data-chat>Спросить администратора</button>`;
+    return;
+  }
+  const c=C(S.sel),T=TYPES[c.type],st=siteStatus(c),q=quote(c,S.in,S.out),tooMany=S.guests>T.guests;
+  const days=Array.from({length:14},(_,i)=>addS(S.in,i));
+  let alt='';
+  if(st==='busy'){for(let k=1;k<=60;k++){const a=addS(S.in,k);if(isFree(c.id,a,addS(a,n))){alt=a;break}}}
+  P.innerHTML=`<div><p class="eyebrow">${c.street} · участок ${String(c.sotki).replace('.',',')} сот.</p>
+    <h3 style="margin-top:6px">Коттедж №${c.id} <span class="tag">${T.name}</span></h3>
+    <p style="margin-top:8px"><span class="pill ${st}">${st==='free'?'Свободен на ваши даты':st==='busy'?'Занят на ваши даты':'На обслуживании'}</span></p></div>
+    <div class="specs"><div><b>${T.guests}</b><span>гостей</span></div><div><b>${T.beds}</b><span>спальни</span></div><div><b>${T.area}</b><span>м²</span></div></div>
+    <div class="feat">${T.feats.map(f=>`<span class="tag">${f}</span>`).join('')}</div>
+    <div><p class="eyebrow" style="margin-bottom:6px">Занятость на 2 недели</p>
+    <div class="strip">${days.map(d=>{const busy=!isFree(c.id,d,addS(d,1)),inR=d>=S.in&&d<S.out;return `<button type="button" class="${busy?'busy':''} ${inR?'range':''}" data-day="${d}" title="${fmt(d,{day:'numeric',month:'long',weekday:'long'})}${busy?' — занято':''}">${parse(d).getDate()}<small>${wd(d)}</small></button>`}).join('')}</div></div>
+    <div class="row2"><label class="field"><span>Заезд</span><input type="date" id="pIn" min="${TS}" value="${S.in}"></label><label class="field"><span>Выезд</span><input type="date" id="pOut" min="${addS(S.in,1)}" value="${S.out}"></label></div>
+    ${tooMany?`<p class="note warn">Дом рассчитан на ${T.guests} гостей, а вы указали ${S.guests}. Посмотрите Барн ${c.type==='S'?'M или L':'L'}.</p>`:''}
+    ${st==='busy'&&alt?`<p class="note">Ближайшие свободные даты на ${nightsTxt(n)}: <b>${fmt(alt)} – ${fmt(addS(alt,n))}</b> <button class="btn btn-ghost btn-xs" type="button" data-alt="${alt}" style="margin-left:4px">Выбрать</button></p>`:''}
+    ${st==='off'?`<p class="note warn">Дом временно закрыт на обслуживание. Выберите другой участок.</p>`:''}
+    <div class="quote">
+      <div><span>${rub(price(c))} × ${nightsTxt(q.n)}</span><span class="mono">${rub(price(c)*q.n)}</span></div>
+      ${q.we?`<div><span>Выходные ночи (+20%) × ${q.we}</span><span class="mono">+${rub(q.sum-price(c)*q.n)}</span></div>`:''}
+      <div class="tot"><span>Итого</span><span>${rub(q.sum)}</span></div>
+      <div style="color:var(--ink-3);font-size:13px"><span>Предоплата 30%</span><span class="mono">${rub(q.sum*.3)}</span></div>
+    </div>
+    <button class="btn btn-amber btn-block" type="button" id="bookBtn" ${st!=='free'||tooMany?'disabled':''}>Забронировать</button>
+    <div class="row2"><button class="btn btn-ghost btn-sm" type="button" data-chat>Задать вопрос</button><button class="btn btn-ghost btn-sm" type="button" id="unsel">Все коттеджи</button></div>`;
+}
+$('#panel').addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.pick){S.sel=+t.dataset.pick;renderSite()}
+  else if(t.dataset.day){const n=diff(S.in,S.out);S.in=t.dataset.day;S.out=addS(S.in,n);renderSite()}
+  else if(t.dataset.alt){const n=diff(S.in,S.out);S.in=t.dataset.alt;S.out=addS(S.in,n);renderSite()}
+  else if(t.id==='unsel'){S.sel=null;renderSite()}
+  else if(t.id==='bookBtn')openBooking();
+  else if('chat' in t.dataset)openChat();
+});
+$('#panel').addEventListener('change',e=>{if(e.target.id==='pIn')setDates(e.target.value,null);if(e.target.id==='pOut')setDates(S.in,e.target.value);renderSite()});
+$('#mIn').addEventListener('change',e=>{setDates(e.target.value,null);renderSite()});
+$('#mOut').addEventListener('change',e=>{setDates(S.in,e.target.value);renderSite()});
+$('#mG').addEventListener('change',e=>{S.guests=+e.target.value;renderSite()});
+$('#hsIn').addEventListener('change',e=>{setDates(e.target.value,null);syncInputs()});
+$('#heroSearch').addEventListener('submit',e=>{e.preventDefault();setDates($('#hsIn').value,$('#hsOut').value);S.guests=+$('#hsG').value;S.onlyFree=true;S.sel=null;renderSite();$('#map').scrollIntoView()});
+$('#typeChips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;S.type=b.dataset.type;renderSite()});
+$('#onlyFree').addEventListener('change',e=>{S.onlyFree=e.target.checked;renderSite()});
+$$('.seg button').forEach(b=>b.addEventListener('click',()=>{S.view=b.dataset.view;$$('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));$('#planWrap').hidden=S.view!=='plan';$('#planPhoto').hidden=S.view==='plan';$('#mapCount').hidden=S.view!=='plan'}));
+$('#menuBtn').addEventListener('click',()=>{const o=$('#nav').classList.toggle('open');$('#menuBtn').setAttribute('aria-expanded',o)});
+$('#nav').addEventListener('click',e=>{if(e.target.closest('a')){$('#nav').classList.remove('open');$('#menuBtn').setAttribute('aria-expanded','false')}});
+
+/* type cards */
+function barnArt(k){
+  const w=k==='S'?110:k==='M'?150:170,x=k==='L'?110-w/2+10:160-w/2,base=150,h=w*.42,apex=base-h-w*.42;
+  const pts=`${x},${base} ${x},${base-h} ${x+w/2},${apex} ${x+w},${base-h} ${x+w},${base}`;
+  const ix=x+w*.18,iw=w*.64,ib=base-6,ih=h*.82;
+  const win=`${ix},${ib} ${ix},${ib-ih} ${x+w/2},${apex+w*.2} ${ix+iw},${ib-ih} ${ix+iw},${ib}`;
+  const tree=(tx,s)=>`<path class="t2" d="M${tx} ${150-70*s} l${18*s} ${35*s} h${-8*s} l${14*s} ${28*s} h${-48*s} l${14*s} ${-28*s} h${-8*s}z" transform="translate(0 ${7*s})"/>`;
+  return `<svg viewBox="0 0 320 180" aria-hidden="true">
+   <rect width="320" height="180" fill="var(--surface-2)"/>
+   ${tree(30,1.3)}${tree(70,1)}${tree(262,1.4)}${tree(300,1)}
+   <rect y="150" width="320" height="30" fill="var(--map-ground)"/>
+   <polygon points="${pts}" fill="var(--house)"/>
+   <polygon points="${win}" fill="var(--lamp)" opacity=".9"/>
+   <path d="M${x+w/2} ${apex+w*.2} V${ib} M${ix} ${ib-ih*.5} H${ix+iw}" stroke="var(--house)" stroke-width="2.5"/>
+   <rect x="${x-12}" y="${base-4}" width="${w+24}" height="6" fill="var(--ink-3)"/>
+   ${k==='L'?`<polygon points="236,150 236,124 254,110 272,124 272,150" fill="var(--house)"/><rect x="249" y="132" width="10" height="18" fill="var(--lamp)" opacity=".8"/>`:''}
+  </svg>`;
+}
+function renderTypes(){
+  $('#types').innerHTML=Object.entries(TYPES).map(([k,T])=>{const cnt=COTTAGES.filter(c=>c.type===k).length;
+    return `<article class="type">${barnArt(k)}<div class="type-b"><h3>${T.name}</h3><p style="color:var(--ink-2);font-size:14.5px">${T.text}</p>
+    <div class="specs"><div><b>${T.guests}</b><span>гостей</span></div><div><b>${T.beds}</b><span>спальни</span></div><div><b>${T.area}</b><span>м²</span></div></div>
+    <div class="feat">${T.feats.map(f=>`<span class="tag">${f}</span>`).join('')}</div>
+    <div class="price"><span><small>от</small> <b>${rub(T.price)}</b> <small>/ ночь</small></span><button class="btn btn-ghost btn-sm" type="button" data-showtype="${k}">${cnt} на карте →</button></div></div></article>`}).join('');
+}
+renderTypes();
+$('#types').addEventListener('click',e=>{const b=e.target.closest('[data-showtype]');if(!b)return;S.type=b.dataset.showtype;S.sel=null;renderSite();$('#map').scrollIntoView()});
+const sotki=COTTAGES.map(c=>c.sotki);
+$('#factCount').textContent=COTTAGES.length+' коттеджей';
+$('#factSotki').textContent=`участки от ${String(Math.min(...sotki)).replace('.',',')} до ${String(Math.max(...sotki)).replace('.',',')} сотки`;
+
+/* ---------- booking modal ---------- */
+const modal=$('#modal');
+let BK=null;
+function openBooking(){
+  const c=C(S.sel);BK={cid:c.id,in:S.in,out:S.out,guests:S.guests,services:new Set()};
+  modal.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="bkT">
+   <div class="modal-h"><div><p class="eyebrow">Заявка на бронирование</p><h3 id="bkT">Коттедж №${c.id} · ${TYPES[c.type].name}</h3></div><button class="x" type="button" data-close aria-label="Закрыть">×</button></div>
+   <form class="modal-b" id="bkForm" novalidate>
+    <div class="modal-f">
+      <div class="row2"><label class="field"><span>Заезд</span><input type="date" id="bIn" min="${TS}" value="${BK.in}"></label><label class="field"><span>Выезд</span><input type="date" id="bOut" min="${addS(BK.in,1)}" value="${BK.out}"></label></div>
+      <div class="row2"><label class="field"><span>Гостей</span><select id="bG"></select></label><label class="field"><span>Имя</span><input id="bName" autocomplete="name" placeholder="Как к вам обращаться"></label></div>
+      <div class="row2"><label class="field"><span>Телефон</span><input id="bPhone" type="tel" autocomplete="tel" placeholder="+7 900 000-00-00"></label><label class="field"><span>Email (необязательно)</span><input id="bEmail" type="email" autocomplete="email" placeholder="для подтверждения"></label></div>
+      <div class="field"><span>Дополнительно</span><div class="checks">${SERVICES.map(s=>`<label><input type="checkbox" value="${s.id}" id="sv-${s.id}"> ${s.name}<span class="p">${rub(s.price)}</span></label>`).join('')}</div></div>
+      <label class="field"><span>Комментарий</span><textarea id="bCom" rows="2" placeholder="Например: приедем поздно вечером"></textarea></label>
+      <p class="err" id="bErr" role="alert"></p>
+    </div>
+    <div class="modal-s" id="bSum"></div>
+   </form></div>`;
+  guestOpts($('#bG'),TYPES[c.type].guests);$('#bG').value=Math.min(BK.guests,TYPES[c.type].guests);
+  modal.hidden=false;document.body.style.overflow='hidden';
+  renderSum();setTimeout(()=>$('#bName').focus(),30);
+}
+function renderSum(){
+  const c=C(BK.cid),q=quote(c,BK.in,BK.out),sv=SERVICES.filter(s=>BK.services.has(s.id)),svs=sv.reduce((a,s)=>a+s.price,0),tot=q.sum+svs,free=isFree(c.id,BK.in,BK.out);
+  $('#bSum').innerHTML=`<p class="eyebrow">Ваша бронь</p>
+   <div><b style="font-size:16px">${fmt(BK.in,{day:'numeric',month:'long'})} — ${fmt(BK.out,{day:'numeric',month:'long'})}</b><p class="muted" style="color:var(--ink-2);font-size:13.5px">${nightsTxt(q.n)} · ${c.street} · заезд с 15:00</p></div>
+   ${free?'':'<p class="note warn">Эти даты уже заняты. Выберите другие.</p>'}
+   <div class="quote"><div><span>Проживание</span><span class="mono">${rub(q.sum)}</span></div>
+   ${q.we?`<div style="color:var(--ink-3);font-size:13px"><span>в т. ч. выходных ночей</span><span class="mono">${q.we}</span></div>`:''}
+   ${sv.map(s=>`<div><span>${s.name}</span><span class="mono">${rub(s.price)}</span></div>`).join('')}
+   <div class="tot"><span>Итого</span><span>${rub(tot)}</span></div>
+   <div style="color:var(--ink-2);font-size:13.5px"><span>Предоплата 30%</span><span class="mono">${rub(tot*.3)}</span></div></div>
+   <button class="btn btn-amber btn-block" type="submit" ${free&&q.n>0?'':'disabled'}>Отправить заявку</button>
+   <p style="font-size:12.5px;color:var(--ink-3)">Оплата не списывается сейчас. Администратор перезвонит в течение 15 минут и пришлёт ссылку на предоплату.</p>`;
+  BK.total=tot;
+}
+modal.addEventListener('click',e=>{if(e.target===modal||e.target.closest('[data-close]'))closeModal();const a=e.target.closest('[data-openchat]');if(a){closeModal();openChat()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!modal.hidden)closeModal();else if(!$('#chat').hidden)closeChat()}});
+modal.addEventListener('change',e=>{
+  if(!BK)return;const t=e.target;
+  if(t.id==='bIn'){BK.in=t.value<TS?TS:t.value;if(BK.out<=BK.in)BK.out=addS(BK.in,1);$('#bOut').min=addS(BK.in,1);$('#bOut').value=BK.out;t.value=BK.in}
+  if(t.id==='bOut'){BK.out=t.value>BK.in?t.value:addS(BK.in,1);t.value=BK.out}
+  if(t.id==='bG')BK.guests=+t.value;
+  if(t.id&&t.id.startsWith('sv-')){t.checked?BK.services.add(t.value):BK.services.delete(t.value)}
+  if(t.id==='bIn'||t.id==='bOut'||t.id.startsWith('sv-'))renderSum();
+});
+modal.addEventListener('submit',e=>{
+  e.preventDefault();if(!BK)return;
+  const name=$('#bName').value.trim(),phone=$('#bPhone').value.trim(),err=$('#bErr');
+  if(name.length<2){err.textContent='Укажите имя — так администратор будет к вам обращаться.';$('#bName').focus();return}
+  if(phone.replace(/\D/g,'').length<10){err.textContent='Проверьте телефон: нужно минимум 10 цифр, например +7 900 000-00-00.';$('#bPhone').focus();return}
+  if(!isFree(BK.cid,BK.in,BK.out)){err.textContent='Эти даты уже заняты. Выберите другие даты.';return}
+  const id='L-'+(DB.seq++);
+  DB.bookings.push({id,cid:BK.cid,in:BK.in,out:BK.out,guests:BK.guests,name,phone,email:$('#bEmail').value.trim(),services:[...BK.services],comment:$('#bCom').value.trim(),status:'new',source:'Сайт',created:Date.now(),amount:BK.total});
+  const ch=DB.chats.me;ch.msgs.push({from:'admin',auto:true,text:`${name}, спасибо! Получили заявку ${id} на коттедж №${BK.cid}, ${fmt(BK.in)} – ${fmt(BK.out)}. Перезвоню в течение 15 минут для подтверждения.`,t:Date.now()});ch.ug++;
+  save();renderSite();updateBadge();
+  modal.querySelector('.modal').innerHTML=`<div class="modal-h"><div><p class="eyebrow">Заявка отправлена</p><h3>Спасибо, ${esc(name)}!</h3></div><button class="x" type="button" data-close aria-label="Закрыть">×</button></div>
+   <div class="success"><span class="big">${id}</span><p>Коттедж №${BK.cid} · ${fmt(BK.in,{day:'numeric',month:'long'})} — ${fmt(BK.out,{day:'numeric',month:'long'})} · ${rub(BK.total)}</p>
+   <p style="color:var(--ink-2);max-width:52ch">Заявка появилась в админ-панели со статусом «Новая». Администратор перезвонит на ${esc(phone)} и пришлёт ссылку на предоплату ${rub(BK.total*.3)}.</p>
+   <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="button" data-openchat>Открыть чат</button><button class="btn btn-ghost" type="button" data-close>Готово</button></div></div>`;
+  BK=null;
+});
+function closeModal(){modal.hidden=true;modal.innerHTML='';BK=null;document.body.style.overflow=''}
+
+/* ---------- chat widget ---------- */
+const chat=$('#chat');
+function msgHTML(m,mine){return `<div class="msg ${mine?'me':'them'}">${m.auto?'<span class="auto">автоответ</span>':''}${esc(m.text)}<time>${hm(m.t)}</time></div>`}
+function renderWidget(typing){const ch=DB.chats.me;$('#chatMsgs').innerHTML=ch.msgs.map(m=>msgHTML(m,m.from==='guest')).join('')+(typing?'<div class="typing">Ольга печатает…</div>':'');const box=$('#chatMsgs');box.scrollTop=box.scrollHeight}
+function updateBadge(){const n=DB.chats.me.ug,b=$('#chatBadge');b.hidden=!n||!chat.hidden;b.textContent=n}
+function openChat(){chat.hidden=false;DB.chats.me.ug=0;save();updateBadge();renderWidget();setTimeout(()=>$('#chatInput').focus(),30)}
+function closeChat(){chat.hidden=true;updateBadge()}
+$('#chatFab').addEventListener('click',()=>chat.hidden?openChat():closeChat());
+$('#chatClose').addEventListener('click',closeChat);
+$('#chatQuick').addEventListener('click',e=>{const b=e.target.closest('button');if(b)sendGuest(b.textContent)});
+$('#chatForm').addEventListener('submit',e=>{e.preventDefault();const v=$('#chatInput').value.trim();if(!v)return;$('#chatInput').value='';sendGuest(v)});
+function autoReply(t){
+  t=t.toLowerCase();
+  if(/собак|кот|питом|живот|пёс|пес/.test(t))return 'С питомцами можно во всех коттеджах, доплата 1 500 ₽ за проживание. Отметьте «Питомец» при бронировании.';
+  if(/свобод|выходн|дат|когда/.test(t)){const a=iso(addDays(TODAY,toFri)),b=addS(a,2);const fr=COTTAGES.filter(c=>cstat(c)!=='off'&&isFree(c.id,a,b)).sort((x,y)=>price(x)-price(y));
+    return fr.length?`На ближайшие выходные (${fmt(a)} – ${fmt(b)}) свободно ${fr.length} ${plural(fr.length,'коттедж','коттеджа','коттеджей')}. Самый доступный — №${fr[0].id} (${TYPES[fr[0].type].name}) за ${rub(price(fr[0]))} в будни. Все свободные видно на карте.`:'На ближайшие выходные всё занято, но есть варианты на будни. Напишите удобные даты — подберу.'}
+  if(/бан|сауна|купел/.test(t))return 'Общественная баня работает с 12:00 до 23:00, сеанс 3 часа — 4 500 ₽, до 8 человек. В коттеджах Барн L есть своя баня.';
+  if(/цен|стоим|сколько|прайс/.test(t))return 'Барн S — от 9 500 ₽, Барн M — от 14 900 ₽, Барн L — от 21 500 ₽ за ночь. Ночи с пятницы на субботу и с субботы на воскресенье +20%.';
+  if(/добрат|доехать|адрес|дорог|проезд|где/.test(t))return 'От МКАД около 30 минут. Точный адрес и схему проезда пришлю после подтверждения брони. У въезда КПП, парковка у каждого дома.';
+  return 'Спасибо! Передала вопрос, отвечу в течение пары минут.';
+}
+function sendGuest(text){
+  const ch=DB.chats.me;ch.msgs.push({from:'guest',text,t:Date.now()});ch.ua++;save();renderWidget(true);
+  setTimeout(()=>{ch.msgs.push({from:'admin',auto:true,text:autoReply(text),t:Date.now()});if(chat.hidden)ch.ug++;save();renderWidget();updateBadge();if(!$('#admin').hidden)renderAdmin()},1300);
+}
+
+/* ---------- toast ---------- */
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2600)}
+
+/* ---------- ADMIN ---------- */
+const A={tab:'overview',bf:'upcoming',q:'',chat:'me',hl:null,resetArm:false};
+const TABS=[['overview','Обзор'],['bookings','Бронирования'],['gantt','Шахматка'],['cottages','Коттеджи'],['chats','Чаты'],['settings','Настройки']];
+const ICONS={overview:'<path d="M3 13h7V3H3zM14 21h7V11h-7zM3 21h7v-5H3zM14 7h7V3h-7z"/>',bookings:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',gantt:'<path d="M3 4h18v16H3zM3 9h18M3 14h18M9 4v16"/>',cottages:'<path d="M3 11l9-7 9 7v10H3z"/>',chats:'<path d="M4 5h16v11H9l-5 4z"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>'};
+const adm=$('#admin');
+function renderAdmin(){
+  if(!DB.authed){adm.innerHTML=`<div class="login"><div class="login-card"><div class="logo">ЛОКАРНО<small>панель администратора</small></div>
+    <h2 style="font-size:24px">Вход для администратора</h2>
+    <p class="demo">Это демо-режим макета: пароль не нужен, все брони и сообщения хранятся только в этом браузере.</p>
+    <button class="btn btn-primary btn-block" type="button" id="login">Войти в демо-режиме</button>
+    <a href="#top" style="font-size:14px;color:var(--ink-2)">← Вернуться на сайт</a></div></div>`;
+    $('#login').onclick=()=>{DB.authed=true;save();renderAdmin()};return}
+  if(A.tab==='chats'&&DB.chats[A.chat])DB.chats[A.chat].ua=0;
+  const nNew=DB.bookings.filter(b=>b.status==='new').length,nUn=Object.values(DB.chats).reduce((a,c)=>a+c.ua,0);
+  const badges={bookings:nNew,chats:nUn};
+  const cur=TABS.find(t=>t[0]===A.tab);
+  adm.innerHTML=`<div class="adm"><aside class="side"><div class="logo">ЛОКАРНО<small>админ-панель</small></div>
+   <nav>${TABS.map(([k,t])=>`<button type="button" data-tab="${k}" ${A.tab===k?'aria-current="page"':''}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${ICONS[k]}</svg>${t}${badges[k]?`<span class="badge">${badges[k]}</span>`:''}</button>`).join('')}</nav>
+   <div class="me"><div class="ava on">О</div><div><b>Ольга</b>администратор</div></div></aside>
+   <div class="main"><div class="main-h"><div><h1>${cur[1]}</h1><p class="sub">${fmt(TS,{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</p></div>
+   <div style="display:flex;gap:8px"><a class="btn btn-ghost btn-sm" href="#top">Открыть сайт</a><button class="btn btn-ghost btn-sm" type="button" id="logout">Выйти</button></div></div>
+   <div id="aBody"></div></div></div>`;
+  ({overview:aOverview,bookings:aBookings,gantt:aGantt,cottages:aCottages,chats:aChats,settings:aSettings})[A.tab]($('#aBody'));
+}
+adm.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.tab){A.tab=t.dataset.tab;A.resetArm=false;renderAdmin();scrollTo(0,0)}
+  else if(t.id==='logout'){DB.authed=false;save();renderAdmin()}
+  else if(t.dataset.act){setStatus(t.dataset.id,t.dataset.act)}
+  else if(t.dataset.bf){A.bf=t.dataset.bf;renderAdmin()}
+  else if(t.dataset.go){A.tab=t.dataset.go;if(t.dataset.f)A.bf=t.dataset.f;renderAdmin()}
+  else if(t.dataset.cid){A.chat=t.dataset.cid;DB.chats[A.chat].ua=0;save();renderAdmin()}
+  else if(t.dataset.tpl){const i=$('#aMsg');i.value=t.dataset.tpl;i.focus()}
+  else if(t.id==='reset'){if(!A.resetArm){A.resetArm=true;t.textContent='Нажмите ещё раз для сброса';return}try{localStorage.removeItem(KEY)}catch(e){}seed();DB.v=1;DB.day=TS;DB.authed=true;save();A.resetArm=false;renderAdmin();renderSite();updateBadge();toast('Демо-данные сброшены')}
+});
+function setStatus(id,act){const b=DB.bookings.find(x=>x.id===id);if(!b)return;
+  const map={confirm:'confirmed',cancel:'cancelled',checkin:'in',checkout:'done'};b.status=map[act];save();renderAdmin();renderSite();
+  toast(`${id}: ${STATUS[b.status].toLowerCase()}`)}
+
+function kpis(){
+  const act=COTTAGES.filter(c=>cstat(c)!=='off').length,occ=occupiedOn(TS).length;
+  const arrT=DB.bookings.filter(b=>live(b)&&b.in===TS).length,arrM=DB.bookings.filter(b=>live(b)&&b.in===addS(TS,1)).length;
+  const nNew=DB.bookings.filter(b=>b.status==='new').length;
+  const from=addS(TS,-30),rev=DB.bookings.filter(b=>live(b)&&b.status!=='new'&&b.in>=from&&b.in<TS).reduce((a,b)=>a+b.amount,0);
+  return {act,occ,arrT,arrM,nNew,rev};
+}
+function aOverview(el){
+  const k=kpis();
+  const upcoming=DB.bookings.filter(b=>live(b)&&(b.in===TS||b.in===addS(TS,1))).sort((a,b)=>a.in<b.in?-1:1);
+  const fresh=DB.bookings.filter(b=>b.status==='new').sort((a,b)=>a.in<b.in?-1:1).slice(0,6);
+  el.innerHTML=`<div class="kpis">
+    <div class="kpi"><span>Загрузка сегодня</span><b>${Math.round(k.occ/k.act*100)}%</b><small>${k.occ} из ${k.act} домов заняты</small></div>
+    <div class="kpi"><span>Заезды</span><b>${k.arrT}</b><small>сегодня · завтра ещё ${k.arrM}</small></div>
+    <div class="kpi"><span>Новые заявки</span><b>${k.nNew}</b><small>ждут подтверждения</small></div>
+    <div class="kpi"><span>Выручка за 30 дней</span><b>${Math.round(k.rev/1000).toLocaleString('ru-RU')}к</b><small>${rub(k.rev)}</small></div></div>
+   <div class="ov">
+    <div class="card chart"><h2>Загрузка на 14 дней <small>% занятых домов по ночам</small></h2><div id="occChart"></div></div>
+    <div class="card"><h2>Новые заявки <button class="btn btn-ghost btn-xs" type="button" data-go="bookings" data-f="new">Все</button></h2><div class="list">${fresh.length?fresh.map(b=>`<div class="li"><div class="grow"><b class="mono">${b.id}</b> · ${esc(b.name)}<small>№${b.cid} · ${fmt(b.in)} – ${fmt(b.out)} · ${rub(b.amount)}</small></div><button class="btn btn-primary btn-xs" type="button" data-act="confirm" data-id="${b.id}">Подтвердить</button></div>`).join(''):'<p class="empty">Новых заявок нет.</p>'}</div></div>
+    <div class="card map"><h2>Посёлок сегодня <small>серым — заняты этой ночью</small></h2><div class="map-scroll"><svg id="aPlan" viewBox="0 0 1000 740" role="img" aria-label="Занятость посёлка сегодня"></svg></div></div>
+    <div class="card"><h2>Заезды сегодня и завтра <small>${upcoming.length}</small></h2><div class="list">${upcoming.length?upcoming.map(b=>`<div class="li"><div class="grow">${esc(b.name)}<small>№${b.cid} · ${b.in===TS?'сегодня':'завтра'} · ${b.guests} ${plural(b.guests,'гость','гостя','гостей')} · ${esc(b.phone)}</small></div><span class="pill ${b.status}">${STATUS[b.status]}</span></div>`).join(''):'<p class="empty">Заездов нет.</p>'}</div></div>
+   </div>`;
+  drawChart($('#occChart'),k.act);
+  const sv=$('#aPlan');sv.innerHTML=planSVG();
+  const occ=new Set(occupiedOn(TS).map(b=>b.cid));
+  $$('.plot',sv).forEach(g=>{const c=C(+g.dataset.id),off=cstat(c)==='off';g.classList.toggle('busy',occ.has(c.id)&&!off);g.classList.toggle('off',off)});
+  bindPlan(sv,id=>{A.tab='gantt';A.hl=id;renderAdmin();const r=$(`.g-row[data-row="${id}"]`);if(r)r.scrollIntoView({block:'center'})},id=>{const b=occupiedOn(TS).find(x=>x.cid===id),c=C(id);
+    return `<b>№${id}</b> · ${TYPES[c.type].name}<br>${cstat(c)==='off'?'На обслуживании':b?`${esc(b.name)}, до ${fmt(b.out)}`:'Свободен сегодня'}`});
+}
+function drawChart(el,act){
+  const W=640,H=210,L=36,Rr=8,T=12,B=34,pw=W-L-Rr,ph=H-T-B,n=14,bw=pw/n;
+  const data=Array.from({length:n},(_,i)=>{const d=addS(TS,i),o=occupiedOn(d).length;return{d,o,p:o/act}});
+  const y=v=>T+ph*(1-v);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Загрузка посёлка на 14 дней">`;
+  [0,.25,.5,.75,1].forEach(v=>{s+=`<line class="gl" x1="${L}" x2="${W-Rr}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L-6}" y="${y(v)+3.5}" text-anchor="end">${v*100}%</text>`});
+  data.forEach((p,i)=>{const w=bw*.56,x=L+i*bw+(bw-w)/2,top=y(p.p),h=Math.max(0,T+ph-top),r=Math.min(4,h);const dd=parse(p.d).getDay(),we=dd===5||dd===6;
+    s+=`<g data-i="${i}"><rect class="hit" x="${L+i*bw}" y="${T}" width="${bw}" height="${ph+B}"/>
+    <path class="bar ${we?'we':''}" d="M${x} ${T+ph} V${top+r} Q${x} ${top} ${x+r} ${top} H${x+w-r} Q${x+w} ${top} ${x+w} ${top+r} V${T+ph} Z"/>
+    <text class="ax" x="${x+w/2}" y="${H-B+16}" text-anchor="middle">${parse(p.d).getDate()}</text>
+    <text class="ax" x="${x+w/2}" y="${H-B+28}" text-anchor="middle" style="font-family:var(--f-body)">${wd(p.d)}</text></g>`});
+  s+=`</svg><p style="font-size:12.5px;color:var(--ink-3);margin-top:6px"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:color-mix(in oklab,var(--moss) 70%,var(--amber));vertical-align:-1px"></span> ночи пятницы и субботы</p>`;
+  el.innerHTML=s;
+  el.querySelector('svg').addEventListener('mousemove',e=>{const g=e.target.closest('g[data-i]');if(!g){hideTip();return}const p=data[+g.dataset.i];
+    showTip(`${fmt(p.d,{weekday:'short',day:'numeric',month:'short'})}<br>занято <b>${p.o}</b> из ${act} · <b>${Math.round(p.p*100)}%</b>`,e.clientX,e.clientY)});
+  el.querySelector('svg').addEventListener('mouseleave',hideTip);
+}
+function aBookings(el){
+  const F=[['upcoming','Предстоящие'],['new','Новые'],['confirmed','Подтверждены'],['in','Проживают'],['done','Завершены'],['cancelled','Отменены'],['all','Все']];
+  let rows=DB.bookings.filter(b=>A.bf==='all'?true:A.bf==='upcoming'?(b.out>=TS&&(b.status==='new'||b.status==='confirmed'||b.status==='in')):b.status===A.bf);
+  const q=A.q.trim().toLowerCase();
+  if(q)rows=rows.filter(b=>(b.id+' '+b.name+' '+b.phone+' №'+b.cid).toLowerCase().includes(q));
+  rows.sort((a,b)=>A.bf==='done'||A.bf==='all'?(a.in<b.in?1:-1):(a.in<b.in?-1:a.in>b.in?1:a.cid-b.cid));
+  const total=rows.length;rows=rows.slice(0,60);
+  const acts=b=>b.status==='new'?`<button class="btn btn-primary btn-xs" type="button" data-act="confirm" data-id="${b.id}">Подтвердить</button><button class="btn btn-ghost btn-xs" type="button" data-act="cancel" data-id="${b.id}">Отклонить</button>`
+    :b.status==='confirmed'?`<button class="btn btn-ghost btn-xs" type="button" data-act="checkin" data-id="${b.id}">Заселить</button><button class="btn btn-ghost btn-xs" type="button" data-act="cancel" data-id="${b.id}">Отменить</button>`
+    :b.status==='in'?`<button class="btn btn-ghost btn-xs" type="button" data-act="checkout" data-id="${b.id}">Выселить</button>`:'';
+  el.innerHTML=`<div class="toolbar"><div class="chips">${F.map(([k,t])=>`<button type="button" class="chip" data-bf="${k}" aria-pressed="${A.bf===k}">${t}</button>`).join('')}</div>
+   <input id="aQ" type="search" placeholder="Поиск: имя, телефон, L-1234, №24" value="${esc(A.q)}" aria-label="Поиск бронирований"></div>
+   <div class="tbl-wrap"><table><thead><tr><th>Бронь</th><th>Гость</th><th>Коттедж</th><th>Даты</th><th class="r">Сумма</th><th>Статус</th><th class="r">Действия</th></tr></thead><tbody>
+   ${rows.map(b=>{const c=C(b.cid);return `<tr><td><b class="mono">${b.id}</b><small>${b.source}</small></td><td>${esc(b.name)}<small class="mono">${esc(b.phone)}</small></td>
+   <td>№${b.cid} · ${TYPES[c.type].name}<small>${b.guests} ${plural(b.guests,'гость','гостя','гостей')}${b.services.length?' · '+b.services.map(s=>SERVICES.find(x=>x.id===s).name.split(',')[0].toLowerCase()).join(', '):''}</small></td>
+   <td style="white-space:nowrap">${fmt(b.in)} – ${fmt(b.out)}<small>${nightsTxt(diff(b.in,b.out))}</small></td><td class="r mono">${rub(b.amount)}</td>
+   <td><span class="pill ${b.status}">${STATUS[b.status]}</span>${b.comment?`<small title="${esc(b.comment)}">«${esc(b.comment.slice(0,40))}»</small>`:''}</td><td><div class="acts">${acts(b)}</div></td></tr>`}).join('')||'<tr><td colspan="7" class="empty" style="padding:20px">Ничего не найдено. Измените фильтр или запрос.</td></tr>'}
+   </tbody></table></div><p class="tbl-foot">Показано ${rows.length} из ${total}</p>`;
+  const i=$('#aQ');i.addEventListener('input',()=>{A.q=i.value;const p=i.selectionStart;aBookings(el);const n=$('#aQ');n.focus();n.setSelectionRange(p,p)});
+}
+function aGantt(el){
+  const D=24,start=addS(TS,-3),days=Array.from({length:D},(_,i)=>addS(start,i));
+  const head=`<div class="g-row g-head" style="--days:${D}"><div class="g-name">Коттедж</div>${days.map((d,i)=>{const w=parse(d).getDay();return `<div style="grid-column:${i+2}" class="${d===TS?'today':''}">${parse(d).getDate()}<small>${wd(d)}</small></div>`}).join('')}</div>`;
+  const rows=COTTAGES.map(c=>{const bs=DB.bookings.filter(b=>b.cid===c.id&&live(b)&&b.out>start&&b.in<addS(start,D));
+    const cells=days.map((d,i)=>{const w=parse(d).getDay();return `<div class="g-cell ${d===TS?'today':(w===0||w===6)?'we':''}" style="grid-column:${i+2}"></div>`}).join('');
+    const bars=bs.map(b=>{const s=Math.max(0,diff(start,b.in)),e=Math.min(D,diff(start,b.out));const nm=b.name.split(' ');
+      return `<div class="g-bar ${b.status}" style="grid-column:${s+2}/${e+2}" title="${b.id} · ${esc(b.name)} · ${fmt(b.in)}–${fmt(b.out)} · ${STATUS[b.status]}">${esc(nm[1]||nm[0])}</div>`}).join('');
+    return `<div class="g-row ${A.hl===c.id?'hl':''}" data-row="${c.id}" style="--days:${D}"><div class="g-name"><b>№${c.id}</b><small>${c.type}${cstat(c)==='off'?' · ремонт':''}</small></div>${cells}${bars}</div>`}).join('');
+  el.innerHTML=`<div class="g-legend"><span class="pill new">Новая</span><span class="pill confirmed">Подтверждена</span><span class="pill in">Проживают</span><span class="pill">Завершена</span><span style="margin-left:auto;color:var(--ink-3)">Ночи с ${fmt(start)} по ${fmt(days[D-1])}</span></div><div class="gantt">${head}${rows}</div>`;
+  A.hl=null;
+}
+function aCottages(el){
+  const to=addS(TS,30);
+  el.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>№</th><th>Тип</th><th>Улица</th><th class="r">Участок</th><th class="r">Гостей</th><th>Цена за ночь</th><th>Статус</th><th class="r">Загрузка 30 дн.</th></tr></thead><tbody>
+  ${COTTAGES.map(c=>{let nights=0;DB.bookings.forEach(b=>{if(b.cid===c.id&&live(b)){const a=b.in>TS?b.in:TS,z=b.out<to?b.out:to;if(z>a)nights+=diff(a,z)}});const p=Math.round(nights/30*100);
+   return `<tr><td class="mono"><b>${c.id}</b></td><td>${TYPES[c.type].name}</td><td>${c.street}</td><td class="r mono">${String(c.sotki).replace('.',',')} сот.</td><td class="r mono">${TYPES[c.type].guests}</td>
+   <td><input class="price" type="number" step="100" min="1000" value="${price(c)}" data-price="${c.id}" aria-label="Цена коттеджа ${c.id}"></td>
+   <td><select data-cst="${c.id}" aria-label="Статус коттеджа ${c.id}"><option value="active" ${cstat(c)==='active'?'selected':''}>Сдаётся</option><option value="off" ${cstat(c)==='off'?'selected':''}>Обслуживание</option></select></td>
+   <td class="r"><span class="mono">${p}%</span> <span style="display:inline-block;width:60px;height:6px;border-radius:3px;background:var(--surface-2);vertical-align:middle;overflow:hidden"><span style="display:block;height:100%;width:${p}%;background:var(--moss)"></span></span></td></tr>`}).join('')}
+  </tbody></table></div><p class="tbl-foot">Цена и статус сразу применяются на карте сайта.</p>`;
+  el.onchange=e=>{const t=e.target;if(t.dataset.price){const id=+t.dataset.price,v=Math.max(1000,Math.round(+t.value/100)*100);DB.cot[id]={...DB.cot[id],price:v};t.value=v;save();renderSite();toast(`Цена №${id}: ${rub(v)}`)}
+    if(t.dataset.cst){const id=+t.dataset.cst;DB.cot[id]={...DB.cot[id],status:t.value};save();renderSite();toast(`№${id}: ${t.value==='off'?'закрыт на обслуживание':'снова сдаётся'}`)}};
+}
+function aChats(el){
+  const list=Object.entries(DB.chats).sort((a,b)=>b[1].msgs.at(-1).t-a[1].msgs.at(-1).t);
+  if(!DB.chats[A.chat])A.chat=list[0][0];
+  const ch=DB.chats[A.chat];ch.ua=0;save();
+  const tpls=['Здравствуйте! Сейчас проверю даты.','Бронь подтверждена, ссылку на предоплату отправила в SMS.','Да, это возможно. Добавлю в вашу бронь.'];
+  el.innerHTML=`<div class="chats"><div class="c-list">${list.map(([id,c])=>{const l=c.msgs.at(-1);return `<button class="c-item" type="button" data-cid="${id}" aria-current="${id===A.chat}"><div class="ava">${esc(c.name[0])}</div><div class="grow"><b>${esc(c.name)}</b><small>${l.from==='admin'?'Вы: ':''}${esc(l.text)}</small></div>${c.ua?`<span class="badge">${c.ua}</span>`:`<small style="color:var(--ink-3);font-size:11.5px" class="mono">${hm(l.t)}</small>`}</button>`}).join('')}</div>
+   <div class="c-thread"><div class="head"><div><b>${esc(ch.name)}</b><small>${A.chat==='me'?'Чат с сайта · это ваш диалог из виджета на сайте':'Чат с сайта'}</small></div></div>
+   <div class="msgs" id="aMsgs">${ch.msgs.map(m=>msgHTML(m,m.from==='admin')).join('')}</div>
+   <div class="quick">${tpls.map(t=>`<button type="button" data-tpl="${esc(t)}">${esc(t.slice(0,28))}…</button>`).join('')}</div>
+   <form class="compose" id="aForm"><input id="aMsg" placeholder="Ответ гостю…" autocomplete="off" aria-label="Ответ гостю"><button class="btn btn-primary" type="submit">Отправить</button></form></div></div>`;
+  const box=$('#aMsgs');box.scrollTop=box.scrollHeight;
+  $('#aForm').onsubmit=e=>{e.preventDefault();const v=$('#aMsg').value.trim();if(!v)return;ch.msgs.push({from:'admin',text:v,t:Date.now()});if(A.chat==='me')ch.ug++;save();renderAdmin();updateBadge();setTimeout(()=>$('#aMsg')&&$('#aMsg').focus(),0)};
+}
+function aSettings(el){
+  el.innerHTML=`<div class="set">
+   <div class="card"><h2>Цены и правила</h2>
+    <div class="sw"><span>Наценка на ночи пт и сб</span><b class="mono">+20%</b></div>
+    <div class="sw"><span>Предоплата при подтверждении</span><b class="mono">30%</b></div>
+    <div class="sw"><span>Бесплатная отмена</span><b class="mono">за 7 дней</b></div>
+    <div class="sw"><span>Заезд / выезд</span><b class="mono">15:00 / 12:00</b></div></div>
+   <div class="card"><h2>Уведомления</h2>
+    <label class="sw"><span>Новая заявка — SMS администратору</span><input type="checkbox" checked></label>
+    <label class="sw"><span>Новое сообщение в чате — push</span><input type="checkbox" checked></label>
+    <label class="sw"><span>Напоминание гостю за день до заезда</span><input type="checkbox" checked></label>
+    <label class="sw"><span>Автоответ в чате вне рабочего времени</span><input type="checkbox"></label></div>
+   <div class="card"><h2>Демо-данные</h2><p style="color:var(--ink-2);font-size:14px;margin-bottom:14px">В макете брони, цены и переписка хранятся только в этом браузере. Сброс вернёт исходные примеры.</p><button class="btn btn-ghost" type="button" id="reset">Сбросить демо-данные</button></div>
+  </div>`;
+}
+
+/* ---------- routing ---------- */
+function route(){
+  const isA=location.hash==='#admin';
+  $('#site').hidden=isA;adm.hidden=!isA;hideTip();
+  if(isA){closeChat();renderAdmin();scrollTo(0,0)}else{renderSite();updateBadge()}
+}
+addEventListener('hashchange',route);
+route();
+})();
+</script>
+
+</body>
+</html>
