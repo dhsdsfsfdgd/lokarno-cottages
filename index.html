@@ -137,37 +137,42 @@ section.block{padding-block:72px}
 @media (max-width:1100px){.gp-grid{grid-template-columns:1fr}}
 .gp-card{border-radius:16px;border:1px solid var(--line);overflow:hidden;background:var(--map-ground)}
 .gp-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.gp{position:relative;min-width:700px;aspect-ratio:840/770;background:#21402A}
+.gp{position:relative;min-width:700px;aspect-ratio:840/770;background:#293b25 var(--plan-terrain) center/100% 100% no-repeat}
 .gp svg{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-select:none}
 .gp-foot{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;padding:12px 16px;background:var(--surface);border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
 .gp-foot .hint{margin-left:auto;color:var(--ink-3)}
 .gp-foot span{display:inline-flex;align-items:center;gap:7px}
-/* genplan drawing: one illustrated look in both themes, like the client's render */
-svg .bg{fill:#21402A}
-svg .t1{fill:#2E5A35} svg .t2{fill:#24492C} svg .t3{fill:#5E8B4E;opacity:.55}
-svg .lawn{fill:#93B26B}
-svg .rd-e{stroke:#6F8358;stroke-width:17;fill:none;stroke-linecap:round;stroke-linejoin:round}
-svg .rd{stroke:#E6E0CF;stroke-width:14;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.gp-foot .touch-hint{display:none;color:var(--ink-2);flex-basis:100%}
+@media (max-width:735px){.gp-foot .touch-hint{display:inline-flex}.gp-foot .hint{margin-left:0}}
+/* Генплан: растровый ландшафт и векторные участки по схеме заказчика. */
+svg .lawn{fill:#78834e;stroke:#485234;stroke-width:9;stroke-linejoin:round;filter:drop-shadow(4px 6px 5px #101709b3)}
+svg .rd-e{stroke:#756c54;stroke-width:17;fill:none;stroke-linecap:round;stroke-linejoin:round}
+svg .rd{stroke:#d6c5a4;stroke-width:14;fill:none;stroke-linecap:round;stroke-linejoin:round}
 svg .rd-e.thin{stroke-width:12} svg .rd.thin{stroke-width:9}
-svg .rlabel{font:500 9px var(--f-body);fill:#6B6352;letter-spacing:.04em;pointer-events:none}
-svg .bound{fill:none;stroke:#fff;stroke-width:2;stroke-opacity:.9;stroke-linejoin:round}
-svg .water{fill:#7FB3C4}
-svg .wlabel{font:500 10px var(--f-body);fill:#EAF3F5}
-svg .trail{fill:none;stroke:#D9CFB4;stroke-width:2.2;stroke-dasharray:5 5;opacity:.85}
-svg .ttl{font:400 30px var(--f-display);fill:#EEF3EA;letter-spacing:.16em}
-svg .sub{font:500 10px var(--f-body);fill:#CFDCC8}
-svg .cmp{fill:#EEF3EA}
-svg .mk-main{fill:#F2A93B} svg .mk-exit{fill:#3FBF5F} svg .mk-fire{fill:#E0473C}
-svg .bbq{fill:#F2B34A;stroke:#fff;stroke-width:1.5}
-svg .cell{cursor:pointer;stroke:#fff;stroke-opacity:.85;stroke-width:1.2;fill-opacity:.82;transition:fill-opacity .12s}
-svg .cell.free{fill:#6CC067} svg .cell.res{fill:#EBB34F} svg .cell.busy{fill:#DE6A52}
-svg .plot:hover .cell,svg .plot:focus-visible .cell{fill-opacity:1;stroke-width:2.6;stroke-opacity:1}
-svg .plot.sel .cell{fill-opacity:1;stroke:#15221A;stroke-width:3;stroke-opacity:1}
+svg .rlabel{font:700 9px var(--f-body);fill:#504330;letter-spacing:.025em;pointer-events:none}
+svg .bound{fill:none;stroke:#f5e6bc;stroke-width:1.8;stroke-linejoin:round;pointer-events:none}
+svg .wlabel{font:600 11px var(--f-body);fill:#f0f2df}
+svg .trail{fill:none;stroke:#dfc79b;stroke-width:2.3;stroke-dasharray:4 5;opacity:.9}
+svg .ttl{font:400 35px var(--f-display);fill:#faf2d8;letter-spacing:.14em}
+svg .sub{font:600 11px var(--f-body);fill:#f4edd2;letter-spacing:.04em}
+svg .ttl,svg .sub,svg .wlabel{paint-order:stroke;stroke:#14201580;stroke-width:2px;stroke-linejoin:round}
+svg .cmp{fill:#f4edd2}
+svg .mk-main,svg .mk-exit,svg .mk-fire{stroke:#30291f;stroke-width:1.2;stroke-linejoin:round}
+svg .mk-main{fill:#f2b95d} svg .mk-exit{fill:#a6cc84} svg .mk-fire{fill:#e08a6c}
+svg .bbq{fill:#f0bd76;stroke:#62482c;stroke-width:1.5}
+svg .cell{cursor:pointer;stroke:#fcf3d4;stroke-opacity:.7;stroke-width:1.15;fill-opacity:.84;transition:fill-opacity .12s,stroke-opacity .12s}
+svg .cell.free{fill:#95b875} svg .cell.res{fill:#e1bd76} svg .cell.busy{fill:#ce8d75}
+svg .plot:hover .cell,svg .plot:focus-visible .cell{fill-opacity:1;stroke-width:2.5;stroke-opacity:1}
+svg .plot.sel .cell{fill-opacity:1;stroke:#27311c;stroke-width:2.6;stroke-opacity:1}
 svg .plot.dim{opacity:.22}
 svg .plot{outline:none}
 svg .pin{pointer-events:none}
-svg .house rect{fill:#26302A} svg .house rect.win{fill:#F2B34A}
-svg .num{font:700 11px var(--f-body);fill:#fff;stroke:rgba(20,30,22,.62);stroke-width:2.6px;paint-order:stroke}
+svg .house-shadow{fill:#222817;opacity:.45}
+svg .house-base{fill:#30342c;stroke:#22261e;stroke-width:.7}
+svg .house-roof{fill:#5c6252}
+svg .house-ridge{stroke:#a3a487;stroke-width:.65}
+svg .house-window{fill:#f3ba6c}
+svg .num{font:700 11px var(--f-body);fill:#fff9e8;stroke:#29311e;stroke-width:2.2px;paint-order:stroke;stroke-linejoin:round}
 
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;position:sticky;top:84px;display:flex;flex-direction:column;gap:16px}
 @media (max-width:1100px){.panel{position:static}}
@@ -324,6 +329,8 @@ td small{display:block;color:var(--ink-3);font-size:12.5px}
 .x{width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:18px;flex:none}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .err{color:var(--danger);font-size:13px}
+/* В GitHub Pages встроенный фон заменяется ссылкой на WebP. */
+:root{--plan-terrain:url("img/lokarno-terrain.webp")}
 </style>
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
 </head>
@@ -392,6 +399,7 @@ td small{display:block;color:var(--ink-3);font-size:12.5px}
               <span><i class="dot res"></i>Забронирован</span>
               <span><i class="dot busy"></i>Занят</span>
               <span class="hint">Номера, улицы и площади — по схеме посёлка</span>
+              <span class="touch-hint">Листайте генплан вбок, чтобы увидеть все участки.</span>
             </div>
           </div>
           <aside class="panel" id="panel" aria-live="polite"></aside>
@@ -573,27 +581,18 @@ Object.entries(BL).forEach(([k,b])=>{let poly=[[-200,250],[800,250],[800,1100],[
 const CELLS={};
 BASE.forEach(s=>{let poly=BLPOLY[s.blk];BASE.forEach(o=>{if(o===s||o.blk!==s.blk)return;const a=o.x-s.x,b=o.y-s.y,c=(o.x*o.x+o.y*o.y-s.x*s.x-s.y*s.y)/2;poly=clip(poly,a,b,c)});
   CELLS[s.id]='M'+poly.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L')+'Z'});
-function inPoly(x,y,p){let o=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const[xi,yi]=p[i],[xj,yj]=p[j];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))o=!o}return o}
 const seg=s=>`M${s[0][0]} ${s[0][1]} L${s[1][0]} ${s[1][1]}`;
-const DECOR=(()=>{const R=rngF(77),t=[];
-  for(let i=0;i<4000&&t.length<950;i++){const x=-125+R()*850,y=285+R()*780,r=5+R()*7,m=r+6;
-    if([[0,0],[m,0],[-m,0],[0,m],[0,-m]].some(([dx,dy])=>inPoly(x+dx,y+dy,BOUND)))continue;
-    if(((x-655)/(84+r))**2+((y-1000)/(52+r))**2<1)continue;
-    if(x<112&&y<392)continue;
-    t.push([x,y,r,R()])}
-  t.sort((a,b)=>a[1]-b[1]);
-  const trees=t.map(([x,y,r,k])=>`<circle class="${k<.5?'t1':'t2'}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"/><circle class="t3" cx="${(x-r*.3).toFixed(1)}" cy="${(y-r*.32).toFixed(1)}" r="${(r*.45).toFixed(1)}"/>`).join('');
+const DECOR=(()=>{
   const main=['odz','bal','bel','cross','sil','gra','kapo'],thin=['gate','fire'];
   const labels=[['ул. Одзио','odz',.5],['ул. Бальцано','bal',.6],['ул. Бельведер','bel',.24],['ул. Сильвано','sil',.5],['ул. Гранде','gra',.45],['ул. Капо','kapo',.5]].map(([txt,k,f])=>{
     const[[x1,y1],[x2,y2]]=RD[k],x=(x1+(x2-x1)*f).toFixed(1),y=(y1+(y2-y1)*f).toFixed(1);let a=Math.atan2(y2-y1,x2-x1)*180/Math.PI;if(a>90)a-=180;if(a<-90)a+=180;
     return `<text class="rlabel" x="${x}" y="${y}" dy="3.2" text-anchor="middle" transform="rotate(${a.toFixed(1)} ${x} ${y})">${txt}</text>`}).join('');
   const poly=BOUND.map(p=>p.join(',')).join(' ');
-  return `<rect class="bg" x="-130" y="280" width="860" height="790"/>
-   <ellipse class="water" cx="655" cy="1000" rx="84" ry="52"/><text class="wlabel" x="652" y="1004" text-anchor="middle">Озеро</text>
-   <path class="trail" d="M93 836 C 70 880, 10 905, -70 965"/><path class="trail" d="M446 996 C 500 1010, 545 1012, 575 1004"/>
-   ${trees}
-   <text class="ttl" x="-104" y="338">ЛОКАРНО</text><text class="sub" x="-103" y="357">загородный посёлок</text><text class="sub" x="-103" y="371">в окружении леса</text>
-   <g transform="translate(-92 418)"><path class="cmp" d="M0 -15 L6 12 L0 7 L-6 12Z"/><text class="sub" x="0" y="-20" text-anchor="middle">С</text></g>
+  return `<text class="ttl" x="-92" y="344">ЛОКАРНО</text>
+   <text class="sub" x="-90" y="364">Генплан посёлка</text>
+   <g transform="translate(-78 418)"><path class="cmp" d="M0 -15 L6 12 L0 7 L-6 12Z"/><text class="sub" x="0" y="-20" text-anchor="middle">С</text></g>
+   <text class="wlabel" x="611" y="982" text-anchor="middle">Озеро</text>
+   <path class="trail" d="M93 836 C 70 880, 10 905, -70 965"/><path class="trail" d="M446 996 C 477 1005, 511 1004, 545 990"/>
    <polygon class="lawn" points="${poly}"/>
    ${main.map(k=>`<path class="rd-e" d="${seg(RD[k])}"/>`).join('')}${thin.map(k=>`<path class="rd-e thin" d="${seg(RD[k])}"/>`).join('')}
    ${main.map(k=>`<path class="rd" d="${seg(RD[k])}"/>`).join('')}${thin.map(k=>`<path class="rd thin" d="${seg(RD[k])}"/>`).join('')}
@@ -602,9 +601,14 @@ const DECOR=(()=>{const R=rngF(77),t=[];
    <path class="mk-fire" d="M240 360 L254 355 L250 369Z"/><path class="mk-fire" d="M486 360 L500 365 L489 374Z"/>
    <circle class="bbq" cx="514" cy="621" r="6"/><circle class="bbq" cx="420" cy="968" r="6"/>`})();
 
+const HOUSE_ROOF=`<path class="house-shadow" d="M-7 -4H8L12 0V7H-2L-7 4Z"/>
+  <rect class="house-base" x="-7.5" y="-5" width="15" height="10" rx=".8"/>
+  <path class="house-roof" d="M-7 -4.5H7V0H-7Z"/><path class="house-ridge" d="M-7 0H7"/>
+  <rect class="house-window" x="-2.6" y="1.6" width="5.2" height="2.2" rx=".5"/>`;
+
 function planHTML(){return `<svg viewBox="-120 290 840 770" role="group" aria-label="Генплан посёлка Локарно: участки и улицы">${DECOR}
   ${BASE.map(p=>`<g class="plot" data-id="${p.id}" tabindex="0" role="button" aria-label="Участок ${p.id}"><path class="cell" d="${CELLS[p.id]}"/></g>`).join('')}
-  ${BASE.map(p=>`<g class="pin" data-pin="${p.id}"><g class="house" transform="translate(${p.x.toFixed(1)} ${(p.y-6).toFixed(1)}) rotate(${BL[p.blk].ang})"><rect x="-7" y="-4.5" width="14" height="9" rx="1"/><rect class="win" x="-2.5" y="1.4" width="5" height="2.2"/></g><text class="num" x="${p.x.toFixed(1)}" y="${(p.y+11).toFixed(1)}" text-anchor="middle">${p.id}</text></g>`).join('')}</svg>`}
+  ${BASE.map(p=>`<g class="pin" data-pin="${p.id}"><g class="house" transform="translate(${p.x.toFixed(1)} ${(p.y-6).toFixed(1)}) rotate(${BL[p.blk].ang})">${HOUSE_ROOF}</g><text class="num" x="${p.x.toFixed(1)}" y="${(p.y+11).toFixed(1)}" text-anchor="middle">${p.id}</text></g>`).join('')}</svg>`}
 function paintPlan(root,{sel,dimFn}={}){
   $$('.plot',root).forEach(g=>{const p=P(+g.dataset.id),c=g.firstElementChild;c.setAttribute('class','cell '+p.status);g.classList.toggle('sel',sel===p.id);g.classList.toggle('dim',!!dimFn&&dimFn(p));
     g.setAttribute('aria-label',`Участок ${p.id}, ${ST[p.status].toLowerCase()}, ${TYPES[p.type].name}`)});
