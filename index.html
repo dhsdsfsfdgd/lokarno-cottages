@@ -8,7 +8,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Onest:wght@400;500;600;700&family=Tenor+Sans&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Onest:wght@400;500;600;700&family=PT+Serif&family=Tenor+Sans&display=swap">
 <style>
 /* Layout: лесной посёлок; интерактивный генплан заказчика — главный экран, связь только по контактам; админка — вид #admin */
 :root{
@@ -85,65 +85,283 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--moss);bo
 .pill.res{background:color-mix(in oklab,var(--st-res) 22%,var(--surface))}.pill.res::before{background:var(--st-res)}
 .pill.busy{background:color-mix(in oklab,var(--st-busy) 20%,var(--surface))}.pill.busy::before{background:var(--st-busy)}
 
-/* header */
-.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:color-mix(in oklab,var(--bg) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.top-in{display:flex;align-items:center;gap:24px;height:64px}
 .logo{font-family:var(--f-display);font-size:22px;letter-spacing:.32em;text-decoration:none;display:flex;flex-direction:column;line-height:1}
 .logo small{font-family:var(--f-body);font-size:10px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase;margin-top:4px}
-.nav{display:flex;gap:22px;margin-left:12px}
-.nav a{text-decoration:none;color:var(--ink-2);font-size:14px;font-weight:500}
-.nav a:hover{color:var(--ink)}
-.top-actions{margin-left:auto;display:flex;gap:12px;align-items:center}
-.top-phone{font:500 14.5px var(--f-mono);text-decoration:none;white-space:nowrap}
-.menu-btn{display:none;width:40px;height:40px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;align-items:center;justify-content:center}
-@media (max-width:1020px){
-  .nav{display:none;position:absolute;left:0;right:0;top:64px;flex-direction:column;gap:0;margin:0;background:var(--bg);border-bottom:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px))}
-  .nav.open{display:flex}
-  .nav a{padding:10px 0;border-bottom:1px solid var(--line)}
-  .menu-btn{display:inline-flex}
+
+/* Публичная часть */
+#site {
+  --bg: #f6f3ec;
+  --surface: #fcfaf5;
+  --surface-2: #ece8dd;
+  --ink: #252d23;
+  --ink-2: #465044;
+  --ink-3: #596253;
+  --line: #d4d0c3;
+  --primary: #394834;
+  --on-primary: #fffdf6;
+  --site-serif: "PT Serif", Georgia, serif;
+  color-scheme: light;
+  background: var(--bg);
+  color: var(--ink);
 }
-@media (max-width:620px){.top-phone{display:none}}
+#site h1, #site h2, #site h3 {
+  font-family: var(--site-serif);
+  letter-spacing: -.025em;
+}
+#site .wrap {
+  padding-inline: max(28px, env(safe-area-inset-left, 0px)) max(28px, env(safe-area-inset-right, 0px));
+}
+#site .top {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 30;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+#site .top-in {
+  min-height: 68px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+#site .logo {
+  font: 400 32px/1 var(--site-serif);
+  letter-spacing: -.045em;
+}
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 3vw, 38px);
+}
+.site-nav a, #site .top-phone {
+  color: var(--ink);
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.site-nav a:hover, #site .top-phone:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+#site .top-phone {
+  font-variant-numeric: tabular-nums;
+}
+#top {
+  scroll-margin-top: 0;
+}
+#site .hero {
+  display: flex;
+  align-items: end;
+  min-height: clamp(452px, 39vw, 560px);
+  color: #fffbf0;
+  background-color: #30382b;
+  background-image: linear-gradient(90deg, #141b13dd 0%, #141b138c 37%, #141b130d 77%),
+    linear-gradient(0deg, #141b1366, transparent 60%), var(--cottage-forest);
+  background-size: cover;
+  background-position: center, center, center 55%;
+}
+.hero-in {
+  width: 100%;
+  padding-block: 54px 66px;
+}
+.hero-place {
+  margin-bottom: 19px;
+  font-size: 14px;
+  letter-spacing: .035em;
+}
+.hero h1 {
+  max-width: 12ch;
+  font-size: clamp(55px, 6.9vw, 104px);
+  line-height: .97;
+}
+.hero-copy {
+  max-width: 29rem;
+  margin-top: 22px;
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 1.5;
+  color: #fbf6eb;
+}
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 25px;
+  margin-top: 29px;
+}
+#site .btn {
+  border-radius: 4px;
+}
+#site .hero-button {
+  height: 48px;
+  gap: 17px;
+  color: #242f22;
+  background: #f6f2e8;
+}
+#site .hero-button:hover {
+  background: #e9e4d7;
+}
+.hero-contact {
+  padding-block: 9px;
+  text-underline-offset: 5px;
+  text-decoration-color: #fffbf092;
+}
+.hero-contact:hover {
+  text-decoration-color: currentColor;
+}
+#site .section {
+  padding-block: clamp(42px, 6vw, 85px);
+}
+#site #plan {
+  padding-top: clamp(36px, 5vw, 66px);
+}
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 9px 28px;
+  margin-bottom: 26px;
+}
+#site .section h2 {
+  font-size: clamp(34px, 4vw, 54px);
+  line-height: 1.05;
+}
+.section-head p {
+  color: var(--ink-3);
+  max-width: 34ch;
+  font-size: 14px;
+}
+@media (max-width: 740px) {
+  #site .wrap {
+    padding-inline: max(18px, env(safe-area-inset-left, 0px)) max(18px, env(safe-area-inset-right, 0px));
+  }
+  #site .top-in {min-height: 62px; gap: 12px}
+  #site .top-phone {display: none}
+  #site .logo {font-size: 28px}
+  #site .hero {
+    background-image: linear-gradient(0deg, #141b13f2 0%, #141b139c 53%, #141b1324 100%), var(--cottage-forest);
+    background-position: center, center 53%;
+  }
+  .hero-in {padding-block: 60px 34px}
+  .hero-place {margin-bottom: 14px}
+  .hero-copy {margin-top: 18px}
+  .hero-cta {margin-top: 23px}
+}
+@media (max-width: 370px) {
+  #site .top-in {padding-inline: 12px; gap: 8px}
+  .site-nav {gap: 12px}
+  .site-nav a {font-size: 13px}
+  #site .logo {font-size: 25px}
+}
 
-/* hero */
-.hero{padding-block:48px 40px}
-.hero-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center}
-.hero h1{font-size:clamp(34px,4.6vw,58px);line-height:1.06;margin:14px 0 18px}
-.lead{font-size:17px;color:var(--ink-2);max-width:52ch}
-.hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
-.hero-live{display:flex;align-items:center;gap:10px;margin-top:20px;font-size:14px;color:var(--ink-2)}
-.hero-live i{width:9px;height:9px;border-radius:50%;background:var(--st-free);animation:pulse 2s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in oklab,var(--st-free) 60%,transparent)}70%,100%{box-shadow:0 0 0 9px transparent}}
-.hero-art{border-radius:18px;overflow:hidden;box-shadow:var(--shadow);max-width:100%}
-.hero-art svg{display:block;width:100%;height:auto}
-@media (max-width:900px){.hero-in{grid-template-columns:1fr;gap:28px}.hero{padding-block:28px 24px}}
-
-.facts{border-block:1px solid var(--line);background:var(--surface)}
-.facts-in{display:grid;grid-template-columns:repeat(4,1fr);padding-block:18px}
-.fact{display:flex;gap:12px;align-items:center;padding:6px 18px;border-left:1px solid var(--line)}
-.fact:first-child{border-left:0;padding-left:0}
-.fact svg{flex:none;color:var(--moss)}
-.fact b{display:block;font-family:var(--f-display);font-weight:400;font-size:20px;line-height:1.2}
-.fact span{font-size:13px;color:var(--ink-3)}
-@media (max-width:820px){.facts-in{grid-template-columns:1fr 1fr;gap:14px}.fact{border-left:0;padding:0}}
-
-section.block{padding-block:72px}
-.sec-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:24px}
-.sec-head h2{font-size:clamp(28px,3.2vw,40px);margin-top:8px}
-.sec-head p{color:var(--ink-2);max-width:56ch}
-
-/* genplan */
-.gp-tools{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:14px}
-.gp-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:start}
-@media (max-width:1100px){.gp-grid{grid-template-columns:1fr}}
-.gp-card{border-radius:16px;border:1px solid var(--line);overflow:hidden;background:var(--map-ground)}
-.gp-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.gp{position:relative;min-width:700px;aspect-ratio:840/770;background:#293b25 var(--plan-terrain) center/100% 100% no-repeat}
-.gp svg{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-select:none}
-.gp-foot{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;padding:12px 16px;background:var(--surface);border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
-.gp-foot .hint{margin-left:auto;color:var(--ink-3)}
-.gp-foot span{display:inline-flex;align-items:center;gap:7px}
-.gp-foot .touch-hint{display:none;color:var(--ink-2);flex-basis:100%}
-@media (max-width:735px){.gp-foot .touch-hint{display:inline-flex}.gp-foot .hint{margin-left:0}}
+/* Генплан */
+.gp-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 26px;
+  align-items: start;
+}
+.gp-card {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--map-ground);
+}
+.gp-scroll {
+  overflow-x: auto;
+  scrollbar-color: #7c846c #e9e4d7;
+}
+.gp {
+  position: relative;
+  min-width: 700px;
+  aspect-ratio: 840/770;
+  background: #293b25 var(--plan-terrain) center/100% 100% no-repeat;
+}
+.gp svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.gp-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 17px;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.gp-foot .hint {
+  margin-left: auto;
+  color: var(--ink-3);
+}
+.gp-foot span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.gp-tools {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding-block: 11px;
+  margin-bottom: 10px;
+  border-top: 1px solid var(--line);
+}
+#site .chip {
+  min-height: 37px;
+  padding-inline: 9px;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+#site .chip:hover {
+  border-color: var(--line);
+}
+#site .chip[aria-pressed="true"] {
+  color: var(--ink);
+  background: var(--surface-2);
+  border-color: var(--line);
+}
+.type-filter {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink-2);
+  font-size: 14px;
+}
+.type-filter select {
+  width: auto;
+  min-width: 132px;
+  height: 37px;
+  padding-inline: 9px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.touch-hint {
+  display: none;
+  margin: 0 0 8px;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+@media (max-width: 1100px) {
+  .gp-grid {grid-template-columns: minmax(0, 1fr)}
+}
+@media (max-width: 740px) {
+  .gp-tools {margin-bottom: 3px}
+  .touch-hint {display: block}
+  .gp-foot .hint {margin-left: 0}
+  #site .chip {font-size: 13px; padding-inline: 7px}
+}
 /* Генплан: растровый ландшафт и векторные участки по схеме заказчика. */
 svg .lawn{fill:#78834e;stroke:#485234;stroke-width:9;stroke-linejoin:round;filter:drop-shadow(4px 6px 5px #101709b3)}
 svg .rd-e{stroke:#756c54;stroke-width:17;fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -174,90 +392,204 @@ svg .house-ridge{stroke:#a3a487;stroke-width:.65}
 svg .house-window{fill:#f3ba6c}
 svg .num{font:700 11px var(--f-body);fill:#fff9e8;stroke:#29311e;stroke-width:2.2px;paint-order:stroke;stroke-linejoin:round}
 
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;position:sticky;top:84px;display:flex;flex-direction:column;gap:16px}
-@media (max-width:1100px){.panel{position:static}}
-.panel h3{font-size:26px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.muted{color:var(--ink-2);font-size:14px}
-.specs{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:10px}
-.specs div{padding:10px 12px;border-left:1px solid var(--line)}
-.specs div:first-child{border-left:0}
-.specs b{display:block;font-family:var(--f-mono);font-size:17px;font-weight:500}
-.specs span{font-size:12px;color:var(--ink-3)}
-.feat{display:flex;flex-wrap:wrap;gap:6px}
-.price-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-top:1px dashed var(--line);padding-top:12px}
-.price-row b{font:500 22px var(--f-mono)}
-.note{font-size:13.5px;color:var(--ink-2);background:var(--surface-2);border-radius:8px;padding:10px 12px}
-.stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.stat3 button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px;text-align:left;cursor:pointer;color:var(--ink);font:13px var(--f-body);display:flex;flex-direction:column;gap:4px}
-.stat3 button b{font:500 24px var(--f-mono)}
-.stat3 button span{display:flex;align-items:center;gap:6px;color:var(--ink-2)}
-.stat3 button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
-.contact-list{display:flex;flex-direction:column;gap:8px}
-.cline{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:9px 10px 9px 12px;background:var(--surface)}
-.cline .grow{flex:1 1 150px;min-width:0}
-.cline small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
-.cline b{font-weight:500;font-size:15px;overflow-wrap:anywhere}
-.cline .mono{font-size:14.5px;white-space:nowrap}
-.cline{flex-wrap:wrap}
+/* Участок и каталог */
+.panel {
+  position: sticky;
+  top: 94px;
+  display: grid;
+  gap: 17px;
+  padding: 23px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--surface);
+}
+.panel h3 {
+  font-size: 29px;
+  line-height: 1.12;
+}
+.panel-meta {
+  margin-top: 6px;
+  color: var(--ink-2);
+}
+.panel .pill {
+  width: fit-content;
+  border-radius: 4px;
+}
+.muted {
+  color: var(--ink-2);
+  font-size: 14px;
+}
+.detail-specs {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 8px;
+  margin: 0;
+  padding-block: 12px;
+  border-block: 1px solid var(--line);
+}
+.detail-specs div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 4px;
+}
+.detail-specs dt {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.detail-specs dd {
+  margin: 0;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.panel-rate strong {
+  margin-right: 2px;
+  font-size: 22px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+.subtle-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--ink-3);
+}
+.subtle-link:hover {
+  text-decoration-color: currentColor;
+}
+.text-button {
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: 500 14px/1.5 var(--f-body);
+  cursor: pointer;
+}
+@media (max-width: 1100px) {
+  .panel {position: static}
+}
+@media (max-width: 440px) {
+  .panel {padding: 18px}
+}
 
-/* types, services, rules, reviews, faq */
-.types{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-@media (max-width:900px){.types{grid-template-columns:1fr}}
-.type{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-.type svg{display:block;width:100%;height:auto}
-.type-b{padding:20px;display:flex;flex-direction:column;gap:12px;flex:1}
-.type h3{font-size:24px}
-.type .row{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding-top:8px}
-.type .row b{font-family:var(--f-mono);font-size:19px;font-weight:500}
-.type .row small{color:var(--ink-3)}
-.services{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.svc{background:var(--surface);padding:22px;display:flex;flex-direction:column;gap:8px}
-.svc svg{color:var(--moss)}
-.svc h3{font-family:var(--f-body);font-weight:600;font-size:16px;letter-spacing:0}
-.svc p{color:var(--ink-2);font-size:14px}
-.svc .tag{align-self:flex-start;margin-top:auto}
-@media (max-width:900px){.services{grid-template-columns:1fr 1fr}}
-@media (max-width:560px){.services{grid-template-columns:1fr}}
-.how{display:grid;grid-template-columns:1.2fr 1fr;gap:40px}
-@media (max-width:900px){.how{grid-template-columns:1fr}}
-.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:18px;counter-reset:s}
-.steps li{display:grid;grid-template-columns:44px 1fr;gap:14px;counter-increment:s}
-.steps li::before{content:counter(s);width:44px;height:44px;border-radius:50%;border:1px solid var(--moss);color:var(--moss);display:grid;place-items:center;font:500 16px var(--f-mono)}
-.steps b{display:block;font-size:16px;margin-bottom:2px}
-.steps p{color:var(--ink-2);font-size:14px}
-.rules{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px}
-.rules dl{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;margin:12px 0 0}
-.rules dt{color:var(--ink-3);font-size:13.5px}
-.rules dd{margin:0;font-weight:500;font-size:14px}
-.reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-@media (max-width:900px){.reviews{grid-template-columns:1fr}}
-.review{border-top:2px solid var(--ink);padding-top:16px;display:flex;flex-direction:column;gap:10px}
-.review p{font-size:15.5px}
-.review footer{font-size:13px;color:var(--ink-3)}
-.stars{color:var(--amber);letter-spacing:2px;font-size:14px}
-.faq{max-width:820px}
-.faq details{border-bottom:1px solid var(--line);padding:14px 0}
-.faq summary{cursor:pointer;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:16px}
-.faq summary::after{content:"+";font:400 22px var(--f-mono);color:var(--ink-3);line-height:1}
-.faq details[open] summary::after{content:"–"}
-.faq details p{color:var(--ink-2);margin-top:8px;max-width:65ch}
+#cottages {
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+.type {
+  display: grid;
+  grid-template-columns: minmax(118px, .58fr) minmax(0, 1.3fr) minmax(160px, .62fr);
+  gap: 12px 28px;
+  align-items: start;
+  padding-block: 24px;
+  border-top: 1px solid var(--line);
+}
+.type:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.type h3 {
+  font-size: clamp(25px, 3.2vw, 36px);
+  line-height: 1.15;
+}
+.type-specs {
+  font-weight: 600;
+}
+.type-note {
+  margin-top: 4px;
+  color: var(--ink-2);
+}
+.type-book {
+  display: grid;
+  justify-items: end;
+  gap: 7px;
+  text-align: right;
+}
+.type-rate {
+  color: var(--ink-2);
+}
+.type-rate strong {
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+@media (max-width: 685px) {
+  .type {
+    grid-template-columns: minmax(0,1fr);
+    gap: 9px;
+    padding-block: 18px;
+  }
+  .type-book {
+    justify-items: start;
+    text-align: left;
+  }
+}
 
-/* contacts */
-.contacts{background:var(--primary);color:var(--on-primary)}
-.contacts-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:40px;padding-block:64px;align-items:center}
-.contacts h2{font-size:clamp(30px,3.6vw,46px);margin:8px 0 12px}
-.contacts .eyebrow{color:inherit;opacity:.7}
-.contacts p{opacity:.85;max-width:46ch}
-.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ccard{display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:12px;border:1px solid color-mix(in oklab,var(--on-primary) 22%,transparent);text-decoration:none;color:inherit;min-width:0}
-a.ccard:hover{border-color:color-mix(in oklab,var(--on-primary) 55%,transparent)}
-.ccard small{font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.65;font-weight:600}
-.ccard b{font-weight:500;font-size:17px;overflow-wrap:anywhere}
-.ccard.wide{grid-column:1/-1}
-@media (max-width:820px){.contacts-in{grid-template-columns:1fr}.cgrid{grid-template-columns:1fr}}
-.footer{background:var(--side);color:var(--side-ink-2);padding-block:22px;font-size:13px}
-.footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.footer a{color:var(--side-ink)}
+/* Бронирование и контакты */
+.booking {
+  color: #f7f3e8;
+  background: #303d2d;
+}
+.booking-in {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, .72fr);
+  align-items: start;
+  gap: 30px clamp(30px, 8vw, 115px);
+}
+.booking-intro p {
+  margin-top: 18px;
+  max-width: 47ch;
+  color: #e7e9dc;
+  font-size: 17px;
+}
+.booking h3 {
+  margin-bottom: 14px;
+  font-size: 26px;
+  line-height: 1.2;
+}
+.booking-contacts {
+  margin: 0;
+}
+.booking-contact {
+  display: grid;
+  grid-template-columns: 114px minmax(0,1fr);
+  gap: 10px;
+  padding-block: 8px;
+  border-bottom: 1px solid #f7f3e840;
+}
+.booking-contact dt {
+  color: #d2d9c9;
+}
+.booking-contact dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.booking-contact a {
+  text-underline-offset: 4px;
+}
+#site .footer {
+  padding-block: 20px;
+  background: var(--bg);
+  color: var(--ink-3);
+  font-size: 13px;
+}
+#site .footer .wrap, .footer-links {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 9px 17px;
+}
+#site .footer a {
+  text-underline-offset: 3px;
+}
+@media (max-width: 740px) {
+  .booking-in {grid-template-columns: minmax(0, 1fr)}
+}
 
 #tip{position:fixed;z-index:70;pointer-events:none;background:var(--ink);color:var(--bg);font-size:13px;padding:9px 12px;border-radius:9px;max-width:260px;line-height:1.45;box-shadow:var(--shadow)}
 #tip b{font-weight:700}
@@ -329,8 +661,9 @@ td small{display:block;color:var(--ink-3);font-size:12.5px}
 .x{width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:18px;flex:none}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .err{color:var(--danger);font-size:13px}
-/* В GitHub Pages встроенный фон заменяется ссылкой на WebP. */
+/* В GitHub Pages встроенные изображения заменяются ссылками на WebP. */
 :root{--plan-terrain:url("img/lokarno-terrain.webp")}
+:root{--cottage-forest:url("img/lokarno-forest.webp")}
 </style>
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
 </head>
@@ -339,67 +672,48 @@ td small{display:block;color:var(--ink-3);font-size:12.5px}
 <div id="site">
   <header class="top">
     <div class="wrap top-in">
-      <a class="logo" href="#top">ЛОКАРНО<small>коттеджи в лесу</small></a>
-      <nav class="nav" id="nav">
+      <a class="logo" href="#top">Локарно</a>
+      <nav class="site-nav" aria-label="Разделы сайта">
         <a href="#plan">Генплан</a>
-        <a href="#cottages">Коттеджи</a>
-        <a href="#services">Услуги</a>
-        <a href="#how">Как забронировать</a>
+        <a href="#cottages">Дома</a>
         <a href="#contacts">Контакты</a>
       </nav>
-      <div class="top-actions">
-        <a class="top-phone" id="topPhone" href="#contacts"></a>
-        <a class="btn btn-primary btn-sm" href="#plan">Генплан</a>
-        <button class="menu-btn" id="menuBtn" type="button" aria-label="Открыть меню" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 5h14M2 9h14M2 13h14"/></svg></button>
-      </div>
+      <a class="top-phone" id="topPhone" href="#contacts"></a>
     </div>
   </header>
 
   <main>
-    <section class="hero" id="top">
+    <section class="hero" id="top" aria-labelledby="heroTitle">
       <div class="wrap hero-in">
-        <div>
-          <p class="eyebrow">Загородный посёлок · Московская область</p>
-          <h1>Коттеджи в сосновом лесу в 30 минутах от МКАД</h1>
-          <p class="lead">Барнхаусы на 4–8 гостей с террасой, камином и своей баней. Посмотрите на генплане, какие дома свободны, и позвоните — забронируем за пару минут.</p>
-          <div class="hero-cta">
-            <a class="btn btn-amber" href="#plan">Смотреть генплан</a>
-            <a class="btn btn-ghost" id="heroPhone" href="#contacts"></a>
-          </div>
-          <p class="hero-live"><i></i><span id="heroLive"></span></p>
+        <p class="hero-place">Подмосковье, 30 минут от МКАД</p>
+        <h1 id="heroTitle">Коттеджи<br>в лесу</h1>
+        <p class="hero-copy">Дома на 4–8 гостей. Выберите участок на генплане и уточните даты у администратора.</p>
+        <div class="hero-cta">
+          <a class="btn hero-button" href="#plan">Выбрать участок <span aria-hidden="true">↓</span></a>
+          <a class="hero-contact" href="#how">Как забронировать</a>
         </div>
-        <div class="hero-art" id="heroArt"></div>
       </div>
     </section>
 
-    <section class="facts">
-      <div class="wrap facts-in">
-        <div class="fact"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l5 7h-3l4 6h-5v7h-2v-7H6l4-6H7z"/></svg><div><b>Лес вокруг</b><span>сосны и берёзы со всех сторон</span></div></div>
-        <div class="fact"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 15l2-6h14l2 6v3H3z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg><div><b>30 мин</b><span>от МКАД, парковка у дома</span></div></div>
-        <div class="fact"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11l9-7 9 7v10H3z"/><path d="M10 21v-6h4v6"/></svg><div><b id="factCount"></b><span id="factSotki"></span></div></div>
-        <div class="fact"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><div><b>9,88 га</b><span>закрытая территория с КПП</span></div></div>
-      </div>
-    </section>
-
-    <section class="block" id="plan">
+    <section class="section" id="plan" aria-labelledby="planTitle">
       <div class="wrap">
-        <div class="sec-head">
-          <div><p class="eyebrow">Интерактивный генплан</p><h2>Статус каждого участка</h2></div>
-          <p>Наведите на участок, чтобы увидеть статус, дом и цену. Нажмите — откроется карточка с подробностями и контактами для брони.</p>
+        <div class="section-head">
+          <h2 id="planTitle">Генплан посёлка</h2>
+          <p id="planFacts"></p>
         </div>
         <div class="gp-tools">
-          <div class="chips" id="stChips" role="group" aria-label="Статус"></div>
-          <div class="chips" id="typeChips" role="group" aria-label="Тип дома"></div>
+          <div class="chips" id="stChips" role="group" aria-label="Статус участка"></div>
+          <label class="type-filter" for="typeFilter">Тип дома <select id="typeFilter"></select></label>
         </div>
+        <p class="touch-hint">Листайте карту вбок, чтобы увидеть все участки.</p>
         <div class="gp-grid">
           <div class="gp-card">
             <div class="gp-scroll"><div class="gp" id="gpSite"></div></div>
-            <div class="gp-foot">
+            <div class="gp-foot" aria-label="Условные обозначения">
               <span><i class="dot free"></i>Свободен</span>
               <span><i class="dot res"></i>Забронирован</span>
               <span><i class="dot busy"></i>Занят</span>
-              <span class="hint">Номера, улицы и площади — по схеме посёлка</span>
-              <span class="touch-hint">Листайте генплан вбок, чтобы увидеть все участки.</span>
+              <span class="hint">Статусы демонстрационные</span>
             </div>
           </div>
           <aside class="panel" id="panel" aria-live="polite"></aside>
@@ -407,90 +721,39 @@ td small{display:block;color:var(--ink-3);font-size:12.5px}
       </div>
     </section>
 
-    <section class="block" id="cottages" style="background:var(--surface);border-block:1px solid var(--line)">
+    <section class="section" id="cottages" aria-labelledby="cottagesTitle">
       <div class="wrap">
-        <div class="sec-head">
-          <div><p class="eyebrow">Три планировки</p><h2>Коттеджи</h2></div>
-          <p>Все дома — барнхаусы с панорамным остеклением, тёплым полом и полностью оборудованной кухней. Постельное бельё, полотенца и дрова включены.</p>
+        <div class="section-head">
+          <h2 id="cottagesTitle">Дома</h2>
+          <p>Параметры и цены показаны для примера.</p>
         </div>
-        <div class="types" id="types"></div>
+        <div id="types"></div>
       </div>
     </section>
 
-    <section class="block" id="services">
-      <div class="wrap">
-        <div class="sec-head">
-          <div><p class="eyebrow">Инфраструктура</p><h2>Услуги посёлка</h2></div>
-          <p>Платные услуги добавим к брони — просто скажите администратору.</p>
+    <section class="section booking" id="how" aria-labelledby="bookingTitle">
+      <div class="wrap booking-in">
+        <div class="booking-intro">
+          <h2 id="bookingTitle">Как забронировать</h2>
+          <p>Выберите участок и сообщите администратору его номер, даты поездки и сколько вас будет. Администратор подтвердит, свободен ли дом на эти даты, и уточнит условия.</p>
         </div>
-        <div class="services">
-          <div class="svc"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><h3>КПП и охрана 24/7</h3><p>Въезд по номеру брони, видеонаблюдение по периметру, парковка у каждого дома.</p><span class="tag">Включено</span></div>
-          <div class="svc"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3c2 3 5 5 5 9a5 5 0 01-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z"/><path d="M5 21l14-3M5 18l14 3"/></svg><h3>Зоны отдыха</h3><p>Две костровые площадки с лавками и навесом. Дрова бесплатно.</p><span class="tag">Включено</span></div>
-          <div class="svc"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20c3-6 6-2 8-8s5-6 8-8"/><circle cx="4" cy="20" r="1.5"/><circle cx="20" cy="4" r="1.5"/></svg><h3>Экотропа</h3><p>Лесной маршрут от выходов посёлка к озеру, с настилами и указателями.</p><span class="tag">Включено</span></div>
-          <div class="svc"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21V10l9-6 9 6v11z"/><path d="M8 21v-5h8v5M9 9c0-1 1-1 1-2M12 9c0-1 1-1 1-2M15 9c0-1 1-1 1-2"/></svg><h3>Баня</h3><p>Русская баня на дровах с купелью и комнатой отдыха до 8 человек. Сеанс 3 часа.</p><span class="tag">4 500 ₽ / сеанс</span></div>
-          <div class="svc"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="17" r="3.5"/><circle cx="18" cy="17" r="3.5"/><path d="M6 17l4-8h5l3 8M10 9l2 8"/></svg><h3>Прокат</h3><p>Велосипеды, сапборды, снегоступы и санки — в зависимости от сезона.</p><span class="tag">от 500 ₽ / час</span></div>
-          <div class="svc"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 11h16a8 8 0 01-16 0zM8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4"/></svg><h3>Завтраки и мангал</h3><p>Доставка завтраков к дому с 8:00 до 11:00, мангальный набор с углём и решёткой.</p><span class="tag">от 900 ₽</span></div>
+        <div id="contacts">
+          <h3>Связаться с администратором</h3>
+          <dl class="booking-contacts" id="cgrid"></dl>
         </div>
-      </div>
-    </section>
-
-    <section class="block" id="how" style="padding-top:24px">
-      <div class="wrap how">
-        <div>
-          <p class="eyebrow">Бронирование</p>
-          <h2 style="font-size:clamp(28px,3.2vw,40px);margin:8px 0 24px">Как забронировать</h2>
-          <ol class="steps">
-            <li><div><b>Выберите участок на генплане</b><p>Зелёные участки свободны. Запомните номер — он подписан на генплане.</p></div></li>
-            <li><div><b>Позвоните или напишите</b><p>Назовите номер участка и даты. Администратор проверит и подтвердит бронь.</p></div></li>
-            <li><div><b>Предоплата 30%</b><p>Пришлём ссылку на оплату. После предоплаты дом закреплён за вами.</p></div></li>
-          </ol>
-        </div>
-        <div class="rules">
-          <p class="eyebrow">Правила проживания</p>
-          <dl>
-            <dt>Заезд</dt><dd>с 15:00, ранний — с 11:00 за доплату</dd>
-            <dt>Выезд</dt><dd>до 12:00, поздний — до 16:00</dd>
-            <dt>Выходные</dt><dd>ночи пт и сб +20% к цене</dd>
-            <dt>Питомцы</dt><dd>можно, 1 500 ₽ за проживание</dd>
-            <dt>Тишина</dt><dd>с 23:00 до 8:00</dd>
-            <dt>Отмена</dt><dd>бесплатно за 7 дней до заезда</dd>
-          </dl>
-        </div>
-      </div>
-    </section>
-
-    <section class="block" id="reviews" style="padding-top:24px">
-      <div class="wrap">
-        <div class="sec-head"><div><p class="eyebrow">Отзывы гостей</p><h2>Что говорят гости</h2></div></div>
-        <div class="reviews">
-          <article class="review"><div class="stars" aria-label="5 из 5">★★★★★</div><p>Приехали вчетвером на выходные в Барн S. Тишина, сосны прямо за окном, вечером сидели у камина. Баню взяли на субботу — очень советуем.</p><footer>Екатерина · Барн S, октябрь</footer></article>
-          <article class="review"><div class="stars" aria-label="5 из 5">★★★★★</div><p>Отмечали юбилей двумя семьями в Барн L. Своя баня, большая терраса, дети гуляли по экотропе до озера.</p><footer>Дмитрий · Барн L, сентябрь</footer></article>
-          <article class="review"><div class="stars" aria-label="4 из 5">★★★★☆</div><p>Удобно, что на генплане сразу видно, какие дома свободны. Позвонили, назвали номер участка — бронь за пять минут.</p><footer>Анна · Барн M, август</footer></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="block" id="faq" style="padding-top:24px">
-      <div class="wrap">
-        <div class="sec-head"><div><p class="eyebrow">Вопросы</p><h2>Частые вопросы</h2></div></div>
-        <div class="faq">
-          <details><summary>Что есть в доме?</summary><p>Кухня с плитой, духовкой, посудомоечной машиной и посудой, кофемашина, Wi-Fi, Smart TV, тёплый пол, бельё и полотенца, мангал на террасе. В Барн M и L — камин, в Барн L — своя баня.</p></details>
-          <details><summary>Как происходит оплата?</summary><p>После подтверждения брони вы вносите предоплату 30% по ссылке. Остаток оплачивается при заезде картой или по СБП.</p></details>
-          <details><summary>Статус на генплане точный?</summary><p>Статусы обновляет администратор. Если дом отмечен как свободный, но вы сомневаетесь в датах — позвоните, проверим за минуту.</p></details>
-          <details><summary>Можно ли с детьми и питомцами?</summary><p>Да. Детскую кроватку и стульчик поставим бесплатно. Питомцы — 1 500 ₽ за проживание.</p></details>
-        </div>
-      </div>
-    </section>
-
-    <section class="contacts" id="contacts">
-      <div class="wrap contacts-in">
-        <div><p class="eyebrow">Бронирование и вопросы</p><h2>Позвоните или напишите</h2><p>Назовите номер участка с генплана и даты — администратор подтвердит бронь и пришлёт ссылку на предоплату.</p></div>
-        <div class="cgrid" id="cgrid"></div>
       </div>
     </section>
   </main>
 
-  <footer class="footer"><div class="wrap"><span>© Локарно · макет сайта, статусы участков демонстрационные</span><a href="#admin">Вход для администратора</a></div></footer>
+  <footer class="footer">
+    <div class="wrap">
+      <p>© Локарно · макет сайта, цены и контакты тестовые</p>
+      <div class="footer-links">
+        <a href="https://www.pexels.com/photo/sunlit-pine-forest-in-early-morning-28896654/" target="_blank" rel="noopener">Фото для оформления · Елена Волкова, Pexels</a>
+        <a href="#admin">Вход для администратора</a>
+      </div>
+    </div>
+  </footer>
 </div>
 
 <div id="admin" hidden></div>
@@ -509,9 +772,9 @@ function rngF(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(se
 
 /* ---------- каталог ---------- */
 const TYPES={
-  S:{name:'Барн S',guests:4,beds:2,area:72,price:9500,feats:['Терраса','Мангал','Wi-Fi','Тёплый пол'],text:'Уютный дом для пары или семьи с детьми: гостиная-кухня, две спальни, терраса с видом на лес.'},
-  M:{name:'Барн M',guests:6,beds:3,area:110,price:14900,feats:['Камин','Терраса','Мангал','Wi-Fi'],text:'Для двух семей или компании друзей: камин, второй свет, три спальни и большая терраса.'},
-  L:{name:'Барн L',guests:8,beds:4,area:156,price:21500,feats:['Своя баня','Камин','Панорамные окна','Wi-Fi'],text:'Самые большие участки посёлка, собственная баня с купелью, четыре спальни и две ванные.'}
+  S:{name:'Барн S',guests:4,beds:2,area:72,price:9500,feats:['Терраса','Мангал','Wi-Fi','Тёплый пол'],text:'Кухня-гостиная и терраса.'},
+  M:{name:'Барн M',guests:6,beds:3,area:110,price:14900,feats:['Камин','Терраса','Мангал','Wi-Fi'],text:'Гостиная с камином и большая терраса.'},
+  L:{name:'Барн L',guests:8,beds:4,area:156,price:21500,feats:['Своя баня','Камин','Панорамные окна','Wi-Fi'],text:'Две ванные и отдельная баня с купелью.'}
 };
 const ST={free:'Свободен',res:'Забронирован',busy:'Занят'};
 /* Генплан по схеме заказчика («Инфраструктура. Нумерация участков»): координаты в системе листа схемы. */
@@ -628,83 +891,165 @@ function bindPlan(root,onPick){
 }
 
 /* ---------- сайт ---------- */
-const S={st:'all',type:'all',sel:null};
-const gpSite=$('#gpSite');gpSite.innerHTML=planHTML();
-bindPlan(gpSite,id=>{S.sel=id;renderSite();if(innerWidth<1100)$('#panel').scrollIntoView({block:'start'})});
-const dimSite=p=>(S.st!=='all'&&p.status!==S.st)||(S.type!=='all'&&p.type!==S.type);
-function counts(list){const c={free:0,res:0,busy:0};list.forEach(p=>c[p.status]++);return c}
-function telHref(v){return 'tel:'+String(v).replace(/[^\d+]/g,'')}
-function waHref(v){return 'https://wa.me/'+String(v).replace(/\D/g,'')}
-function tgHref(v){return 'https://t.me/'+String(v).replace(/^@/,'')}
-function contactLines(){const c=DB.contacts;return `<div class="contact-list">
-  <div class="cline"><div class="grow"><small>Телефон</small><b class="mono">${esc(c.phone)}</b></div><button class="btn btn-ghost btn-xs" type="button" data-copy="${esc(c.phone)}">Копировать</button><a class="btn btn-primary btn-xs" href="${telHref(c.phone)}">Позвонить</a></div>
-  <div class="cline"><div class="grow"><small>Telegram</small><b>@${esc(c.telegram.replace(/^@/,''))}</b></div><a class="btn btn-ghost btn-xs" href="${tgHref(c.telegram)}" target="_blank" rel="noopener">Написать</a></div>
-  <div class="cline"><div class="grow"><small>WhatsApp</small><b class="mono">${esc(c.whatsapp)}</b></div><a class="btn btn-ghost btn-xs" href="${waHref(c.whatsapp)}" target="_blank" rel="noopener">Написать</a></div></div>`}
-function renderSite(){
-  const all=ALL(),c=counts(all),m=all.filter(p=>S.type==='all'||p.type===S.type),cm=counts(m);
-  $('#stChips').innerHTML=[['all','Все',m.length],['free','Свободные',cm.free],['res','Забронированы',cm.res],['busy','Заняты',cm.busy]].map(([k,t,n])=>`<button type="button" class="chip" data-st="${k}" aria-pressed="${S.st===k}">${k!=='all'?`<i class="dot ${k}"></i>`:''}${t} <b>${n}</b></button>`).join('');
-  $('#typeChips').innerHTML=[['all','Любой дом'],['S','Барн S'],['M','Барн M'],['L','Барн L']].map(([k,t])=>`<button type="button" class="chip" data-type="${k}" aria-pressed="${S.type===k}">${t}</button>`).join('');
-  paintPlan(gpSite,{sel:S.sel,dimFn:dimSite});
-  $('#heroLive').textContent=`Сейчас свободно ${c.free} ${plural(c.free,'дом','дома','домов')} из ${all.length}`;
-  const ph=DB.contacts.phone;$('#topPhone').textContent=ph;$('#topPhone').href=telHref(ph);$('#heroPhone').textContent='Позвонить: '+ph;$('#heroPhone').href=telHref(ph);
-  renderPanel(c,all.length);renderContacts();
+const S = {st:'all', type:'all', sel:null};
+const gpSite = $('#gpSite');
+gpSite.innerHTML = planHTML();
+bindPlan(gpSite, id => {
+  S.sel = id;
+  renderSite();
+  if (innerWidth <= 1100) $('#panel').scrollIntoView({block:'start'});
+});
+const dimSite = p => (S.st !== 'all' && p.status !== S.st) || (S.type !== 'all' && p.type !== S.type);
+function counts(list) {
+  const c = {free:0, res:0, busy:0};
+  list.forEach(p => c[p.status]++);
+  return c;
 }
-function renderPanel(c,total){
-  const el=$('#panel');
-  if(!S.sel){el.innerHTML=`<div><p class="eyebrow">Генплан посёлка</p><h3 style="margin-top:6px">${total} ${plural(total,'дом','дома','домов')} в аренду</h3><p class="muted" style="margin-top:6px">Наведите на участок, чтобы увидеть статус. Нажмите на участок — здесь появится карточка дома.</p></div>
-    <div class="stat3">${['free','res','busy'].map(k=>`<button type="button" data-st="${k}" aria-pressed="${S.st===k}"><span><i class="dot ${k}"></i>${k==='free'?'Свободно':k==='res'?'Бронь':'Занято'}</span><b>${c[k]}</b></button>`).join('')}</div>
-    <div><p class="eyebrow" style="margin-bottom:8px">Забронировать</p>${contactLines()}</div>`;return}
-  const p=P(S.sel),T=TYPES[p.type];
-  el.innerHTML=`<div><p class="eyebrow">${p.street} · ${sot(p.sotki)} сот.</p><h3 style="margin-top:6px">Участок №${p.id} <span class="tag">${T.name}</span></h3><p style="margin-top:10px"><span class="pill ${p.status}">${ST[p.status]}</span></p></div>
-    <div class="specs"><div><b>${T.guests}</b><span>гостей</span></div><div><b>${T.beds}</b><span>спальни</span></div><div><b>${T.area}</b><span>м² дом</span></div></div>
-    <div class="feat">${T.feats.map(f=>`<span class="tag">${f}</span>`).join('')}</div>
-    ${p.note?`<p class="note">${esc(p.note)}</p>`:''}
-    <div class="price-row"><span class="muted">Цена за ночь</span><span><small class="muted">от</small> <b>${rub(p.price)}</b></span></div>
-    <p class="muted">${p.status==='free'?`Чтобы забронировать, назовите администратору номер участка <b>№${p.id}</b> и даты.`:p.status==='res'?'Дом забронирован. Позвоните — подскажем свободные даты или похожий дом рядом.':'Дом сейчас занят. Позвоните — подберём свободные даты.'}</p>
-    ${contactLines()}
-    <button class="btn btn-ghost btn-sm" type="button" id="unsel">← Все участки</button>`;
+function telHref(v) { return 'tel:' + String(v).replace(/[^\d+]/g, ''); }
+function waHref(v) { return 'https://wa.me/' + String(v).replace(/\D/g, ''); }
+function tgName(v) { return String(v).replace(/^@/, ''); }
+function tgHref(v) { return 'https://t.me/' + encodeURIComponent(tgName(v)); }
+
+const typeFilter = $('#typeFilter');
+typeFilter.innerHTML = '<option value="all">Все типы</option>' + Object.entries(TYPES)
+  .map(([key, type]) => `<option value="${key}">${type.name}</option>`).join('');
+$('#planFacts').textContent = `${BASE.length} участков · 9,88 га`;
+
+function renderSite() {
+  const all = ALL();
+  const matches = all.filter(p => S.type === 'all' || p.type === S.type);
+  const totals = counts(matches);
+  const filters = [['all','Все',matches.length], ['free','Свободные',totals.free],
+    ['res','Бронь',totals.res], ['busy','Заняты',totals.busy]];
+  $('#stChips').innerHTML = filters.map(([key, label, total]) =>
+    `<button type="button" class="chip" data-st="${key}" aria-pressed="${S.st === key}">${label} <b>${total}</b></button>`
+  ).join('');
+  typeFilter.value = S.type;
+  paintPlan(gpSite, {sel:S.sel, dimFn:dimSite});
+  const phone = $('#topPhone');
+  phone.textContent = DB.contacts.phone;
+  phone.href = telHref(DB.contacts.phone);
+  renderPanel();
+  renderTypes(all);
+  renderContacts();
 }
-function renderContacts(){const c=DB.contacts;
-  $('#cgrid').innerHTML=`<a class="ccard" href="${telHref(c.phone)}"><small>Телефон</small><b class="mono">${esc(c.phone)}</b></a>
-   <a class="ccard" href="${tgHref(c.telegram)}" target="_blank" rel="noopener"><small>Telegram</small><b>@${esc(c.telegram.replace(/^@/,''))}</b></a>
-   <a class="ccard" href="${waHref(c.whatsapp)}" target="_blank" rel="noopener"><small>WhatsApp</small><b class="mono">${esc(c.whatsapp)}</b></a>
-   <div class="ccard"><small>Email</small><b>${esc(c.email)}</b></div>
-   <div class="ccard wide"><small>Адрес · ${esc(c.hours)}</small><b>${esc(c.address)}</b></div>`}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(!b)return;const v=b.dataset.copy;
-  try{navigator.clipboard.writeText(v).then(()=>toast('Скопировано: '+v),()=>toast(v))}catch(err){toast(v)}});
-$('#panel').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;if(t.id==='unsel'){S.sel=null;renderSite()}else if(t.dataset.st){S.st=S.st===t.dataset.st?'all':t.dataset.st;renderSite()}});
-$('#stChips').addEventListener('click',e=>{const b=e.target.closest('[data-st]');if(b){S.st=b.dataset.st;renderSite()}});
-$('#typeChips').addEventListener('click',e=>{const b=e.target.closest('[data-type]');if(b){S.type=b.dataset.type;renderSite()}});
-$('#menuBtn').addEventListener('click',()=>{const o=$('#nav').classList.toggle('open');$('#menuBtn').setAttribute('aria-expanded',o)});
-$('#nav').addEventListener('click',e=>{if(e.target.closest('a')){$('#nav').classList.remove('open');$('#menuBtn').setAttribute('aria-expanded','false')}});
 
-function barnArt(k,big){
-  const w=k==='S'?110:k==='M'?150:170,x=k==='L'?110-w/2+10:160-w/2,base=150,h=w*.42,apex=base-h-w*.42;
-  const pts=`${x},${base} ${x},${base-h} ${x+w/2},${apex} ${x+w},${base-h} ${x+w},${base}`;
-  const ix=x+w*.18,iw=w*.64,ib=base-6,ih=h*.82,win=`${ix},${ib} ${ix},${ib-ih} ${x+w/2},${apex+w*.2} ${ix+iw},${ib-ih} ${ix+iw},${ib}`;
-  const tree=(tx,s)=>`<path fill="#2C5236" d="M${tx} ${150-70*s} l${18*s} ${35*s} h${-8*s} l${14*s} ${28*s} h${-48*s} l${14*s} ${-28*s} h${-8*s}z" transform="translate(0 ${7*s})"/>`;
-  return `<svg viewBox="0 0 320 ${big?200:180}" aria-hidden="true"><rect width="320" height="${big?200:180}" fill="${big?'#1B2B22':'var(--surface-2)'}"/>
-   ${big?'<circle cx="262" cy="38" r="14" fill="#F4E6C3" opacity=".9"/>':''}
-   ${tree(30,1.3)}${tree(70,1)}${tree(262,1.4)}${tree(300,1)}
-   <rect y="150" width="320" height="${big?50:30}" fill="${big?'#2B4430':'var(--map-ground)'}"/>
-   <polygon points="${pts}" fill="#1E2621"/><polygon points="${win}" fill="#F2B34A" opacity=".92"/>
-   <path d="M${x+w/2} ${apex+w*.2} V${ib} M${ix} ${ib-ih*.5} H${ix+iw}" stroke="#1E2621" stroke-width="2.5"/>
-   <rect x="${x-12}" y="${base-4}" width="${w+24}" height="6" fill="#7A887E"/>
-   ${k==='L'?`<polygon points="236,150 236,124 254,110 272,124 272,150" fill="#1E2621"/><rect x="249" y="132" width="10" height="18" fill="#F2B34A" opacity=".85"/>`:''}
-   ${big?'<polygon points="0,200 320,200 320,190 0,196" fill="#F2B34A" opacity=".12"/>':''}</svg>`}
-$('#heroArt').innerHTML=barnArt('L',true);
-function renderTypes(){$('#types').innerHTML=Object.entries(TYPES).map(([k,T])=>{const n=BASE.filter(p=>p.type===k).length;
-  return `<article class="type">${barnArt(k)}<div class="type-b"><h3>${T.name}</h3><p style="color:var(--ink-2);font-size:14.5px">${T.text}</p>
-  <div class="specs"><div><b>${T.guests}</b><span>гостей</span></div><div><b>${T.beds}</b><span>спальни</span></div><div><b>${T.area}</b><span>м²</span></div></div>
-  <div class="feat">${T.feats.map(f=>`<span class="tag">${f}</span>`).join('')}</div>
-  <div class="row"><span><small>от</small> <b>${rub(T.price)}</b> <small>/ ночь</small></span><button class="btn btn-ghost btn-sm" type="button" data-showtype="${k}">${n} на генплане →</button></div></div></article>`}).join('')}
-renderTypes();
-$('#types').addEventListener('click',e=>{const b=e.target.closest('[data-showtype]');if(!b)return;S.type=b.dataset.showtype;S.sel=null;renderSite();$('#plan').scrollIntoView()});
-const sotkiAll=BASE.map(p=>p.sotki);
-$('#factCount').textContent=BASE.length+' '+plural(BASE.length,'коттедж','коттеджа','коттеджей');
-$('#factSotki').textContent=`участки от ${sot(Math.min(...sotkiAll))} до ${sot(Math.max(...sotkiAll))} сотки`;
+function renderPanel() {
+  const el = $('#panel');
+  if (!S.sel) {
+    el.innerHTML = `<h3>Выберите участок</h3>
+      <p class="muted">Нажмите на участок, чтобы посмотреть параметры дома, цену за ночь и контакты.</p>`;
+    return;
+  }
 
-let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2400)}
+  const p = P(S.sel);
+  const T = TYPES[p.type];
+  const {phone, telegram, whatsapp} = DB.contacts;
+  el.innerHTML = `<div>
+      <h3>Участок №${p.id}</h3>
+      <p class="panel-meta">${p.street} · ${sot(p.sotki)} сот. · ${T.name}</p>
+    </div>
+    <span class="pill ${p.status}">${ST[p.status]}</span>
+    <dl class="detail-specs">
+      <div><dt>гостей</dt><dd>${T.guests}</dd></div>
+      <div><dt>спальни</dt><dd>${T.beds}</dd></div>
+      <div><dt>площадь дома</dt><dd>${T.area} м²</dd></div>
+    </dl>
+    <p class="muted">${T.feats.join(' · ')}</p>
+    ${p.note ? `<p class="muted">${esc(p.note)}</p>` : ''}
+    <p class="panel-rate">от <strong>${rub(p.price)}</strong> за ночь</p>
+    <div class="panel-actions" aria-label="Контакты для бронирования">
+      <a class="btn btn-primary btn-sm" href="${telHref(phone)}">Позвонить</a>
+      ${telegram ? `<a class="subtle-link" href="${tgHref(telegram)}" target="_blank" rel="noopener">Telegram</a>` : ''}
+      ${whatsapp ? `<a class="subtle-link" href="${waHref(whatsapp)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
+    </div>
+    <div class="panel-actions">
+      <button class="text-button subtle-link" type="button" data-copy="${esc(phone)}">Скопировать номер</button>
+      <button class="text-button subtle-link" type="button" id="unsel">К обзору участков</button>
+    </div>`;
+}
+
+function renderContacts() {
+  const c = DB.contacts;
+  const link = (href, text) => `<a href="${esc(href)}">${esc(text)}</a>`;
+  const items = [
+    ['Телефон', link(telHref(c.phone), c.phone)],
+    ['Telegram', c.telegram && link(tgHref(c.telegram), '@' + tgName(c.telegram))],
+    ['WhatsApp', c.whatsapp && link(waHref(c.whatsapp), c.whatsapp)],
+    ['Почта', c.email && link('mailto:' + c.email, c.email)],
+    ['Часы связи', esc(c.hours)],
+    ['Расположение', esc(c.address)]
+  ];
+  $('#cgrid').innerHTML = items.filter(([, value]) => value).map(([label, value]) =>
+    `<div class="booking-contact"><dt>${label}</dt><dd>${value}</dd></div>`
+  ).join('');
+}
+
+function renderTypes(all) {
+  $('#types').innerHTML = Object.entries(TYPES).map(([key, type]) => {
+    const plots = all.filter(plot => plot.type === key);
+    const bedrooms = plural(type.beds, 'спальня', 'спальни', 'спален');
+    const offer = plots.length
+      ? `<p class="type-rate">от <strong>${rub(Math.min(...plots.map(p => p.price)))}</strong> за ночь</p>
+         <button class="text-button subtle-link" type="button" data-showtype="${key}" aria-label="${type.name} на генплане">На генплане <span aria-hidden="true">↗</span></button>`
+      : '<p class="type-rate">Участков с этим типом нет</p>';
+    return `<article class="type">
+      <h3>${type.name}</h3>
+      <div>
+        <p class="type-specs">До ${type.guests} гостей · ${type.beds} ${bedrooms} · ${type.area} м²</p>
+        <p class="type-note">${type.text}</p>
+      </div>
+      <div class="type-book">${offer}</div>
+    </article>`;
+  }).join('');
+}
+
+$('#panel').addEventListener('click', e => {
+  const button = e.target.closest('button');
+  if (!button) return;
+  if (button.dataset.copy) {
+    const value = button.dataset.copy;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(value).then(() => toast('Скопировано: ' + value), () => toast(value));
+    } else {
+      toast(value);
+    }
+    return;
+  }
+  if (button.id === 'unsel') {
+    S.sel = null;
+    renderSite();
+  }
+});
+$('#stChips').addEventListener('click', e => {
+  const button = e.target.closest('[data-st]');
+  if (!button) return;
+  S.st = button.dataset.st;
+  renderSite();
+});
+typeFilter.addEventListener('change', () => {
+  S.type = typeFilter.value;
+  renderSite();
+});
+$('#types').addEventListener('click', e => {
+  const button = e.target.closest('[data-showtype]');
+  if (!button) return;
+  S.type = button.dataset.showtype;
+  S.st = 'all';
+  S.sel = null;
+  renderSite();
+  $('#plan').scrollIntoView();
+  typeFilter.focus({preventScroll:true});
+});
+
+let tt;
+function toast(message) {
+  const el = $('#toast');
+  el.textContent = message;
+  el.hidden = false;
+  clearTimeout(tt);
+  tt = setTimeout(() => el.hidden = true, 2400);
+}
 
 /* ---------- админ-панель ---------- */
 const A={tab:'plan',q:'',fst:'all'};
